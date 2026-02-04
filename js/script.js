@@ -109,6 +109,7 @@ class RetroTimer {
     this.modeText = document.getElementById("mode-text");
     this.vaultBoy = document.getElementById("vault-boy");
     this.explosion = document.getElementById("explosion");
+    this.testBtn = document.getElementById("btn-test");
 
     // Bind buttons
     document.getElementById("btn-start").addEventListener("click", () => {
@@ -142,12 +143,25 @@ class RetroTimer {
     });
 
     this.updateDisplay();
+
+    // Test mode toggle based on URL hash - call on load to handle initial hash
+    window.addEventListener("load", () => this.toggleTestMode());
+    window.addEventListener("hashchange", () => this.toggleTestMode());
+
+    // Set initial title
+    document.title = "Pip-Boy Toolkit - Timer";
+  }
+
+  toggleTestMode() {
+    const isTestMode = window.location.hash === "#test";
+    this.testBtn.style.display = isTestMode ? "inline-block" : "none";
   }
 
   start() {
     if (this.isRunning) return;
     this.isRunning = true;
     this.modeText.innerText = "RUNNING_SEQUENCE...";
+    document.title = "Pip-Boy Toolkit - Timer: Running";
 
     this.timerId = setInterval(() => {
       if (this.timeLeft > 0) {
@@ -165,6 +179,7 @@ class RetroTimer {
     this.isRunning = false;
     this.modeText.innerText = "SEQUENCE_PAUSED";
     this.sound.stopRadiation();
+    document.title = "Pip-Boy Toolkit - Timer: Paused";
   }
 
   reset() {
@@ -178,6 +193,7 @@ class RetroTimer {
     this.modeText.innerText = "STANDBY";
     this.resetVisuals();
     this.updateDisplay();
+    document.title = "Pip-Boy Toolkit - Timer";
   }
 
   setMode(btn) {
@@ -202,6 +218,13 @@ class RetroTimer {
     this.modeText.innerText = "SEQUENCE_COMPLETE";
     this.sound.playAlarm();
     this.triggerFinale();
+    document.title = "Pip-Boy Toolkit - Timer: Complete";
+
+    // Reset to STANDBY after 5 seconds
+    setTimeout(() => {
+      this.modeText.innerText = "STANDBY";
+      document.title = "Pip-Boy Toolkit - Timer";
+    }, 5000);
   }
 
   triggerFinale() {
