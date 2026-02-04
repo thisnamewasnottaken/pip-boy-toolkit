@@ -22,7 +22,10 @@ A Fallout-themed Pomodoro timer with authentic Pip-Boy aesthetics from the Fallo
 3. Select a mode (WORK/SHORT/LONG)
 4. Click **INITIALIZE** to start
 5. Use **HALT** to pause, **RESET** to restart
-6. Click **TEST** to preview the explosion finale
+
+### Test Mode
+
+Append `#test` to the URL (e.g., `index.html#test`) to enable test features like the explosion button. Change the hash to toggle on/off dynamically.
 
 ## Tech Stack
 
