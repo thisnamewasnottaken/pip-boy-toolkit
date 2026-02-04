@@ -110,6 +110,7 @@ class RetroTimer {
     this.vaultBoy = document.getElementById("vault-boy");
     this.explosion = document.getElementById("explosion");
     this.testBtn = document.getElementById("btn-test");
+    this.btnStart = document.getElementById("btn-start");
 
     // Bind buttons
     document.getElementById("btn-start").addEventListener("click", () => {
@@ -162,6 +163,7 @@ class RetroTimer {
     this.isRunning = true;
     this.modeText.innerText = "RUNNING_SEQUENCE...";
     document.title = "Pip-Boy Toolkit - Timer: Running";
+    this.btnStart.disabled = true;
 
     this.timerId = setInterval(() => {
       if (this.timeLeft > 0) {
@@ -180,6 +182,7 @@ class RetroTimer {
     this.modeText.innerText = "SEQUENCE_PAUSED";
     this.sound.stopRadiation();
     document.title = "Pip-Boy Toolkit - Timer: Paused";
+    this.btnStart.disabled = false;
   }
 
   reset() {
@@ -194,6 +197,7 @@ class RetroTimer {
     this.resetVisuals();
     this.updateDisplay();
     document.title = "Pip-Boy Toolkit - Timer";
+    this.btnStart.disabled = false;
   }
 
   setMode(btn) {
@@ -224,6 +228,7 @@ class RetroTimer {
     setTimeout(() => {
       this.modeText.innerText = "STANDBY";
       document.title = "Pip-Boy Toolkit - Timer";
+      this.btnStart.disabled = false;
     }, 5000);
   }
 
