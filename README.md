@@ -31,13 +31,14 @@ A Fallout-themed Pomodoro timer with authentic Pip-Boy aesthetics from the Fallo
 - CSS3 animations and effects
 - Google Fonts (VT323, Share Tech Mono)
 
-## Files
+## Project Structure
 
-- `index.html` - Pip-Boy UI structure
-- `style.css` - Fallout theme styling with CRT effects
-- `script.js` - Timer logic and sound synthesis
-- `vault_boy.png` - Vault Boy thumbs-up image
-- `explosion.png` - Nuclear explosion finale
+- `index.html` - Main entry point
+- `css/style.css` - Stylesheets
+- `js/script.js` - JavaScript logic
+- `assets/images/` - Images (vault_boy.png, explosion.png)
+- `README.md` - This file
+- `.gitignore` - Git ignore rules
 
 ## License
 

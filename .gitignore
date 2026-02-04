@@ -16,3 +16,6 @@ npm-debug.log*
 # Dependencies (if added later)
 node_modules/
 package-lock.json
+
+# Local task tracking
+tasks.md
