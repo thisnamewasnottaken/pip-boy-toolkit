@@ -29,9 +29,26 @@
 
       <main class="pip-content">
         <div class="timer-display">
+          <div class="mode-select">
+            <button data-mode="work" class="mode-btn active">WORK</button>
+            <button data-mode="short" class="mode-btn">SHORT</button>
+            <button data-mode="long" class="mode-btn">LONG</button>
+          </div>
           <h1 id="time-display">25:00</h1>
           <div class="status-indicator">
             STATUS: <span id="mode-text">STANDBY</span>
+          </div>
+          <div class="controls">
+            <button id="btn-start" class="pip-btn">INITIALIZE</button>
+            <button id="btn-pause" class="pip-btn">HALT</button>
+            <button id="btn-reset" class="pip-btn">RESET</button>
+            <button
+              id="btn-test"
+              class="pip-btn"
+              style="border-color: var(--pip-amber); color: var(--pip-amber)"
+            >
+              TEST
+            </button>
           </div>
         </div>
 
@@ -53,22 +70,8 @@
       </main>
 
       <footer class="pip-footer">
-        <div class="controls">
-          <button id="btn-start" class="pip-btn">INITIALIZE</button>
-          <button id="btn-pause" class="pip-btn">HALT</button>
-          <button id="btn-reset" class="pip-btn">RESET</button>
-          <button
-            id="btn-test"
-            class="pip-btn"
-            style="border-color: var(--pip-amber); color: var(--pip-amber)"
-          >
-            TEST
-          </button>
-        </div>
-        <div class="mode-select">
-          <button data-mode="work" class="mode-btn active">WORK</button>
-          <button data-mode="short" class="mode-btn">SHORT</button>
-          <button data-mode="long" class="mode-btn">LONG</button>
+        <div class="function-description" id="function-description">
+          Pomodoro technique: 25 minute work sessions with breaks.
         </div>
       </footer>
     </div>

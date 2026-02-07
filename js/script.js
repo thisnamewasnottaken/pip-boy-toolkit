@@ -104,6 +104,13 @@ class RetroTimer {
     this.isRunning = false;
     this.sound = new SoundManager();
 
+    // Description for each mode
+    this.modeDescriptions = {
+      work: "Pomodoro technique: 25 minute work sessions with breaks.",
+      short: "Short break: 5 minutes to recharge between sessions.",
+      long: "Long break: 15 minutes for extended rest and recovery."
+    };
+
     // DOM Elements
     this.timeDisplay = document.getElementById("time-display");
     this.modeText = document.getElementById("mode-text");
@@ -111,6 +118,7 @@ class RetroTimer {
     this.explosion = document.getElementById("explosion");
     this.testBtn = document.getElementById("btn-test");
     this.btnStart = document.getElementById("btn-start");
+    this.functionDescription = document.getElementById("function-description");
 
     // Bind buttons
     document.getElementById("btn-start").addEventListener("click", () => {
@@ -215,6 +223,7 @@ class RetroTimer {
 
     this.resetVisuals();
     this.updateDisplay();
+    this.updateDescription(mode);
   }
 
   finish() {

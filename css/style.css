@@ -109,6 +109,22 @@ body {
 
 .timer-display {
   text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.timer-display .mode-select {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.timer-display .controls {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  align-items: center;
 }
 
 #time-display {
@@ -155,11 +171,29 @@ body {
   border-top: 2px solid var(--pip-green);
   padding-top: 1rem;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
 }
 
-.controls button,
+.function-description {
+  font-size: 0.95rem;
+  line-height: 1.4;
+  color: var(--pip-green);
+  opacity: 0.9;
+}
+
+.controls button {
+  background: transparent;
+  border: 1px solid var(--pip-green);
+  color: var(--pip-green);
+  font-family: var(--font-main);
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  text-transform: uppercase;
+  font-size: 1rem;
+  transition: all 0.2s;
+}
+
 .mode-select button {
   background: transparent;
   border: 1px solid var(--pip-green);
