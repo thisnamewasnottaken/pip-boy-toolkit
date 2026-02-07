@@ -17,15 +17,23 @@ A Fallout-themed Pomodoro timer with authentic Pip-Boy aesthetics from the Fallo
 
 ## Usage
 
+### Local
+
 1. Open `index.html` in your browser
 2. Click anywhere to enable audio
 3. Select a mode (WORK/SHORT/LONG)
 4. Click **INITIALIZE** to start
 5. Use **HALT** to pause, **RESET** to restart
 
+### GitHub Pages
+
+Visit: https://thisnamewasnottaken.github.io/pip-boy-toolkit/
+
+The app is automatically deployed and updated whenever changes are pushed to the main branch.
+
 ### Test Mode
 
-Append `#test` to the URL (e.g., `index.html#test`) to enable test features like the explosion button. Change the hash to toggle on/off dynamically.
+Append `#test` to the URL (e.g., locally or `https://thisnamewasnottaken.github.io/pip-boy-toolkit/#test`) to enable test features like the explosion button. Change the hash to toggle on/off dynamically.
 
 ## Tech Stack
 
