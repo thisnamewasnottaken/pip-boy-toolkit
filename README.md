@@ -65,12 +65,11 @@ The project is actively expanding. Below are the current objectives and upcoming
 - [x] **Sound System**: Synthesized Geiger counter and alarm audio via Web Audio API.
 - [x] **Responsive Design**: Optimized for mobile (portrait and landscape) and desktop.
 - [x] **Test Mode**: URL hash-based `#test` mode for debugging finale animations.
+- [x] **Automated Deployment**: GitHub Pages integration via GitHub Actions.
 
 ### Upcoming Objectives
-- [/] **Automated Deployment**: GitHub Actions workflow created; push to `main` to trigger.
-- [ ] **Developer Experience**: Add `package.json` for local `live-server` development.
-
 - [ ] **Module: Settings**: Browser storage persistence, toggleable test mode, and username customization.
+- [ ] **Developer Experience**: Add `package.json` for local `live-server` development.
 - [ ] **Module: Vault Climate**: Dynamic weather reporting for your vault's geographic location.
 - [ ] **Module: Encryption Breaker**: Authentic Fallout hacking mini-game.
 - [ ] **Refinement**: Continued cross-browser testing and touch interaction polish.
