@@ -53,16 +53,28 @@ This project follows a modular architecture to allow for easy expansion of Pip-B
 - `tools/` - Individual toolkit modules.
   - `pomodoro/` - The Retro Pomodoro timer.
 - `assets/images/` - Shared image assets (Vault Boy, etc.).
-- `tasks.md` - Detailed project roadmap and task tracking.
+- `README.md` - You are here.
 
-## Roadmap & Tasks
+## Roadmap
 
-The project is actively expanding. For a detailed list of completed and pending tasks, see [tasks.md](tasks.md).
+The project is actively expanding. Below are the current objectives and upcoming features.
 
-### Upcoming Modules
-- Geiger Counter (Visual/Audio)
-- Encryption Breaker (Hacking Mini-game)
-- Vault Map Integration
+### Completed Milestones
+- [x] **Modular Architecture**: Split into `core/` and `tools/` structure.
+- [x] **Retro Pomodoro**: Fully functional timer with authentic CRT effects.
+- [x] **Sound System**: Synthesized Geiger counter and alarm audio via Web Audio API.
+- [x] **Responsive Design**: Optimized for mobile (portrait and landscape) and desktop.
+- [x] **Test Mode**: URL hash-based `#test` mode for debugging finale animations.
+
+### Upcoming Objectives
+- [ ] **Automated Deployment**: GitHub Pages integration via GitHub Actions.
+- [ ] **Developer Experience**: Add `package.json` for local `live-server` development.
+- [ ] **Module: Settings**: Browser storage persistence, toggleable test mode, and username customization.
+- [ ] **Module: Vault Climate**: Dynamic weather reporting for your vault's geographic location.
+- [ ] **Module: Encryption Breaker**: Authentic Fallout hacking mini-game.
+- [ ] **Refinement**: Continued cross-browser testing and touch interaction polish.
+
+
 
 ## Deployment
 
