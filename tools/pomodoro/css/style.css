@@ -94,3 +94,89 @@
     background: var(--pip-green);
     color: #000;
 }
+
+/* Portrait Mobile (max-width: 600px) */
+@media (max-width: 600px) {
+    .pip-content {
+        flex-direction: column;
+        justify-content: flex-start;
+        gap: 2rem;
+        padding-top: 1rem;
+    }
+
+    .timer-display {
+        text-align: center;
+        align-items: center;
+        width: 100%;
+        gap: 1rem;
+    }
+
+    #time-display {
+        font-size: 5rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .status-indicator {
+        font-size: 1.2rem;
+    }
+
+    .character-display {
+        width: 180px;
+        height: 180px;
+        order: -1;
+    }
+
+    .mode-select,
+    .controls {
+        justify-content: center;
+        gap: 0.5rem;
+    }
+
+    .mode-select button,
+    .controls button {
+        padding: 0.4rem 0.6rem;
+        font-size: 0.85rem;
+    }
+}
+
+/* Landscape / Short Screens (max-height: 500px) */
+@media (max-height: 500px) {
+    .pip-content {
+        flex-direction: row !important;
+        justify-content: space-around;
+        gap: 1rem;
+        padding-top: 0.2rem;
+    }
+
+    .timer-display {
+        text-align: left;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    #time-display {
+        font-size: 4rem;
+        margin-bottom: 0.2rem;
+    }
+
+    .status-indicator {
+        font-size: 1rem;
+    }
+
+    .character-display {
+        width: 150px;
+        height: 150px;
+        order: 0;
+    }
+
+    .mode-select,
+    .controls {
+        gap: 0.3rem;
+    }
+
+    .mode-select button,
+    .controls button {
+        padding: 0.2rem 0.5rem;
+        font-size: 0.8rem;
+    }
+}
