@@ -44,17 +44,33 @@ Append `#test` to the URL (e.g., locally or `https://thisnamewasnottaken.github.
 
 ## Project Structure
 
-- `index.html` - Main entry point
-- `css/style.css` - Stylesheets
-- `js/script.js` - JavaScript logic
-- `assets/images/` - Images (vault_boy.png, explosion.png)
-- `README.md` - This file
-- `.gitignore` - Git ignore rules
+This project follows a modular architecture to allow for easy expansion of Pip-Boy themed tools.
+
+- `index.html` - Hub / Main Menu for the toolkit.
+- `core/` - Shared assets and logic for the Pip-Boy aesthetic.
+  - `css/main.css` - CRT effects, colors, and shared layout.
+  - `js/main.js` - Sound synthesis and global UI behaviors.
+- `tools/` - Individual toolkit modules.
+  - `pomodoro/` - The Retro Pomodoro timer.
+- `assets/images/` - Shared image assets (Vault Boy, etc.).
+- `tasks.md` - Detailed project roadmap and task tracking.
+
+## Roadmap & Tasks
+
+The project is actively expanding. For a detailed list of completed and pending tasks, see [tasks.md](tasks.md).
+
+### Upcoming Modules
+- Geiger Counter (Visual/Audio)
+- Encryption Breaker (Hacking Mini-game)
+- Vault Map Integration
+
+## Deployment
+
+The toolkit is optimized for GitHub Pages. Any changes pushed to the `main` branch are automatically deployed to:
+https://thisnamewasnottaken.github.io/pip-boy-toolkit/
 
 ## License
-
 MIT License - Feel free to use and modify!
 
 ## Credits
-
 Inspired by the Fallout series Pip-Boy interface. All code and assets created for this project.

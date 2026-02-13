@@ -1,0 +1,159 @@
+:root {
+  --pip-green: #14f40b;
+  --pip-amber: #ffb200;
+  --pip-dim: #0a4f07;
+  --bg-color: #0d120d;
+  --scanline-color: rgba(0, 0, 0, 0.5);
+  --crt-glow: 0 0 10px var(--pip-green), 0 0 20px var(--pip-green);
+  --font-main: "Share Tech Mono", monospace;
+  --font-digital: "VT323", monospace;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: #000;
+  color: var(--pip-green);
+  font-family: var(--font-main);
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-transform: uppercase;
+}
+
+/* CRT Effects */
+.crt-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background:
+    linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%),
+    linear-gradient(
+      90deg,
+      rgba(255, 0, 0, 0.06),
+      rgba(0, 255, 0, 0.02),
+      rgba(0, 0, 255, 0.06)
+    );
+  background-size:
+    100% 2px,
+    3px 100%;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.screen-curve {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  box-shadow: inset 0 0 100px rgba(0, 0, 0, 0.9);
+  pointer-events: none;
+  z-index: 11;
+}
+
+/* Pip-Boy Container */
+.pip-boy-container {
+  width: 800px;
+  height: 600px;
+  border: 2px solid var(--pip-green);
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background-color: var(--bg-color);
+  box-shadow: 0 0 20px var(--pip-dim);
+  position: relative;
+  z-index: 5;
+}
+
+/* Header */
+.pip-header {
+  display: flex;
+  justify-content: flex-start;
+  border-bottom: 2px solid var(--pip-green);
+  padding-bottom: 0.5rem;
+  margin-bottom: 2rem;
+}
+
+.status-item {
+  margin-right: 2rem;
+  padding: 0.2rem 0.5rem;
+  cursor: pointer;
+  opacity: 0.7;
+}
+
+.status-item.active {
+  opacity: 1;
+  text-shadow: 0 0 8px var(--pip-green);
+  font-weight: bold;
+  border: 1px solid var(--pip-green);
+  background: rgba(20, 244, 11, 0.1);
+}
+
+/* Footer / Controls */
+.pip-footer {
+  border-top: 2px solid var(--pip-green);
+  padding-top: 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.function-description {
+  font-size: 0.95rem;
+  line-height: 1.4;
+  color: var(--pip-green);
+  opacity: 0.9;
+}
+
+.controls button {
+  background: transparent;
+  border: 1px solid var(--pip-green);
+  color: var(--pip-green);
+  font-family: var(--font-main);
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  text-transform: uppercase;
+  font-size: 1rem;
+  transition: all 0.2s;
+}
+
+.controls button:hover {
+  background: var(--pip-green);
+  color: #000;
+  box-shadow: 0 0 10px var(--pip-green);
+}
+
+.controls button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Animations */
+@keyframes flicker {
+  0% {
+    opacity: 0.9;
+  }
+
+  5% {
+    opacity: 0.8;
+  }
+
+  10% {
+    opacity: 0.95;
+  }
+
+  100% {
+    opacity: 0.9;
+  }
+}
