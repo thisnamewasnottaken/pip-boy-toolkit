@@ -67,8 +67,9 @@ The project is actively expanding. Below are the current objectives and upcoming
 - [x] **Test Mode**: URL hash-based `#test` mode for debugging finale animations.
 
 ### Upcoming Objectives
-- [ ] **Automated Deployment**: GitHub Pages integration via GitHub Actions.
+- [/] **Automated Deployment**: GitHub Actions workflow created; push to `main` to trigger.
 - [ ] **Developer Experience**: Add `package.json` for local `live-server` development.
+
 - [ ] **Module: Settings**: Browser storage persistence, toggleable test mode, and username customization.
 - [ ] **Module: Vault Climate**: Dynamic weather reporting for your vault's geographic location.
 - [ ] **Module: Encryption Breaker**: Authentic Fallout hacking mini-game.
