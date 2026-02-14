@@ -35,7 +35,22 @@ The app is automatically deployed and updated whenever changes are pushed to the
 
 Enable **Debug / Test Mode** in the **SETTINGS** module to activate experimental features like the manual explosion trigger. This preference is saved locally for your session. (Legacy support: Appending `#test` to the URL also enables these features).
 
-## Tech Stack
+## Regression Testing
+
+To ensure stability across all modules, this project uses [Playwright](https://playwright.dev/) for automated E2E testing. 
+
+### Running Tests
+1.  **Install**: `npm install`
+2.  **Browser Setup**: `npx playwright install`
+3.  **Run**: `npm test`
+
+The test suite covers:
+- **Main Menu**: Header consistency and navigation.
+- **Timer**: Mode switching and finale animations.
+- **Settings**: Persistent storage and Test Mode integration.
+
+### CI/CD
+Tests are automatically run on every push to the `master` branch. Deployments only proceed if the regression suite passes. ✨
 
 - Vanilla JavaScript (ES6 classes)
 - Web Audio API for sound synthesis

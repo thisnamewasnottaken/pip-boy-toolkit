@@ -13,9 +13,18 @@ Thumbs.db
 *.log
 npm-debug.log*
 
-# Dependencies (if added later)
+# Dependencies
 node_modules/
-package-lock.json
+
+# Playwright
+test-results/
+playwright-report/
+blob-report/
+playwright/.cache/
+
+# Temporary files
+test_output.txt
+.last-run.json
 
 # Local task tracking
 tasks.md

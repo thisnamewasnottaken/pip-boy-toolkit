@@ -1,0 +1,20 @@
+{
+  "name": "pip-boy-toolkit",
+  "version": "1.0.0",
+  "description": "A Fallout-themed Pomodoro timer with authentic Pip-Boy aesthetics from the Fallout series.",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "dev": "http-server . -p 8080",
+    "test": "playwright test"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@playwright/test": "^1.58.2",
+    "http-server": "^14.1.1"
+  }
+}
