@@ -15,11 +15,11 @@ class PomodoroTimer {
         // DOM Elements
         this.timeDisplay = document.getElementById("time-display");
         this.modeText = document.getElementById("mode-text");
+        this.descriptionText = document.getElementById("function-description");
         this.vaultBoy = document.getElementById("vault-boy");
         this.explosion = document.getElementById("explosion");
         this.testBtn = document.getElementById("btn-test");
         this.btnStart = document.getElementById("btn-start");
-        this.functionDescription = document.getElementById("function-description");
 
         // Bind buttons
         document.getElementById("btn-start").addEventListener("click", () => {
@@ -48,17 +48,31 @@ class PomodoroTimer {
 
         this.updateDisplay();
 
-        // Test mode toggle based on URL hash
-        window.addEventListener("load", () => this.toggleTestMode());
-        window.addEventListener("hashchange", () => this.toggleTestMode());
+        // Test mode toggle
+        this.initTestMode();
 
         // Set initial title
         document.title = "Pip-Boy Toolkit - Timer";
     }
 
-    toggleTestMode() {
-        const isTestMode = window.location.hash === "#test";
-        this.testBtn.style.display = isTestMode ? "inline-block" : "none";
+    initTestMode() {
+        const updateTestVisibility = () => {
+            const isSettingsTestMode = window.pipSettings && window.pipSettings.isTestMode();
+            const isHashTestMode = window.location.hash === "#test";
+
+            if (isSettingsTestMode || isHashTestMode) {
+                this.testBtn.style.display = "inline-block";
+            } else {
+                this.testBtn.style.display = "none";
+            }
+        };
+
+        // Initial check
+        updateTestVisibility();
+
+        // Listen for changes
+        window.addEventListener("pip-settings-changed", updateTestVisibility);
+        window.addEventListener("hashchange", updateTestVisibility);
     }
 
     start() {

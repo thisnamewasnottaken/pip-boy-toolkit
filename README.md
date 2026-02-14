@@ -33,7 +33,7 @@ The app is automatically deployed and updated whenever changes are pushed to the
 
 ### Test Mode
 
-Append `#test` to the URL (e.g., locally or `https://thisnamewasnottaken.github.io/pip-boy-toolkit/#test`) to enable test features like the explosion button. Change the hash to toggle on/off dynamically.
+Enable **Debug / Test Mode** in the **SETTINGS** module to activate experimental features like the manual explosion trigger. This preference is saved locally for your session. (Legacy support: Appending `#test` to the URL also enables these features).
 
 ## Tech Stack
 
