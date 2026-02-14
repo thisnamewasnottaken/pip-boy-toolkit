@@ -66,9 +66,9 @@ The project is actively expanding. Below are the current objectives and upcoming
 - [x] **Responsive Design**: Optimized for mobile (portrait and landscape) and desktop.
 - [x] **Test Mode**: URL hash-based `#test` mode for debugging finale animations.
 - [x] **Automated Deployment**: GitHub Pages integration via GitHub Actions.
+- [x] **Module: Settings**: Browser storage persistence, toggleable test mode, and username customization.
 
 ### Upcoming Objectives
-- [ ] **Module: Settings**: Browser storage persistence, toggleable test mode, and username customization.
 - [ ] **Developer Experience**: Add `package.json` for local `live-server` development.
 - [ ] **Module: Vault Climate**: Dynamic weather reporting for your vault's geographic location.
 - [ ] **Module: Encryption Breaker**: Authentic Fallout hacking mini-game.

@@ -97,10 +97,64 @@ class SoundManager {
   }
 }
 
+class SettingsManager {
+  constructor() {
+    this.defaults = {
+      username: "VAULTDWELLER",
+      testMode: false,
+    };
+    this.settings = this.loadSettings();
+  }
+
+  loadSettings() {
+    const stored = localStorage.getItem("pip-boy-settings");
+    return stored
+      ? { ...this.defaults, ...JSON.parse(stored) }
+      : this.defaults;
+  }
+
+  saveSettings() {
+    localStorage.setItem("pip-boy-settings", JSON.stringify(this.settings));
+    window.dispatchEvent(
+      new CustomEvent("pip-settings-changed", { detail: this.settings }),
+    );
+  }
+
+  getUserName() {
+    return this.settings.username;
+  }
+
+  setUserName(name) {
+    this.settings.username = name;
+    this.saveSettings();
+  }
+
+  isTestMode() {
+    return this.settings.testMode;
+  }
+
+  setTestMode(enabled) {
+    this.settings.testMode = enabled;
+    this.saveSettings();
+  }
+}
+
 // Global initialization for shared UI behaviors
 document.addEventListener("DOMContentLoaded", () => {
-  // SoundManager is shared across tools if they need it
+  // Shared Managers
   window.pipSound = new SoundManager();
+  window.pipSettings = new SettingsManager();
+
+  // Initialize Welcome Message if on main menu
+  const welcomeMsg = document.querySelector(".welcome-text p");
+  if (welcomeMsg) {
+    const updateWelcome = () => {
+      welcomeMsg.innerText = `WELCOME, ${window.pipSettings.getUserName()}. SELECT MODULE TO INITIALIZE.`;
+    };
+    updateWelcome();
+    // Listen for changes (in case of multiple tabs or future dynamic updates)
+    window.addEventListener("pip-settings-changed", updateWelcome);
+  }
 
   // Add hover radiation sounds to all buttons (shared behavior)
   const initHoverSounds = () => {
