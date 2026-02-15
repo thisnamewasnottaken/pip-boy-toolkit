@@ -82,10 +82,11 @@ The project is actively expanding. Below are the current objectives and upcoming
 - [x] **Test Mode**: URL hash-based `#test` mode for debugging finale animations.
 - [x] **Automated Deployment**: GitHub Pages integration via GitHub Actions.
 - [x] **Module: Settings**: Browser storage persistence, toggleable test mode, and username customization.
+- [x] **Developer Experience**: Added `package.json` for local `http-server` development and regression testing.
 
 ### Upcoming Objectives
-- [ ] **Developer Experience**: Add `package.json` for local `live-server` development.
 - [ ] **Module: Vault Climate**: Dynamic weather reporting for your vault's geographic location.
+- [ ] **Module: Wasteland Rover** : Authentic Fallout wasteland rover mini-game.
 - [ ] **Module: Encryption Breaker**: Authentic Fallout hacking mini-game.
 - [ ] **Refinement**: Continued cross-browser testing and touch interaction polish.
 
