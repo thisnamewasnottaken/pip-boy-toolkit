@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pip-Boy Toolkit - Encryption Breaker</title>
+    <!-- Core Styles -->
+    <link rel="stylesheet" href="../../core/css/main.css" />
+    <!-- Tool Styles -->
+    <link rel="stylesheet" href="css/style.css" />
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=VT323&display=swap" rel="stylesheet" />
+</head>
+
+<body>
+    <!-- Shared CRT Effects -->
+    <div class="crt-overlay"></div>
+    <div class="screen-curve"></div>
+
+    <div class="pip-boy-container">
+        <header class="pip-header">
+            <span class="status-item"><a href="../../index.html">MENU</a></span>
+            <span class="status-item active">HACKING</span>
+            <span class="status-item"><a href="../settings/index.html">SETTINGS</a></span>
+            <span class="status-item"><a href="../vault-climate/index.html">CLIMATE</a></span>
+            <span class="status-item"><a href="../pomodoro/index.html">TIMER</a></span>
+        </header>
+
+        <main class="pip-content hacking-layout">
+            <div class="terminal-container">
+                <div class="terminal-header">
+                    ROBCO INDUSTRIES (TM) TERMLINK PROTOCOL<br>
+                    ENTER PASSWORD NOW
+                </div>
+                <div class="attempts-indicator">
+                    <span id="attempts-left">4</span> ATTEMPT(S) LEFT:
+                    <span id="attempt-blocks">█ █ █ █</span>
+                </div>
+
+                <div class="game-grid">
+                    <div class="column" id="col-1">
+                        <!-- Hex and Symbols/Words will be injected here -->
+                    </div>
+                    <div class="column" id="col-2">
+                        <!-- Hex and Symbols/Words will be injected here -->
+                    </div>
+                    <div class="sidebar" id="terminal-sidebar">
+                        <div id="output-log">
+                            <!-- Feedback log -->
+                        </div>
+                        <div class="selection-preview">> <span id="current-selection"></span></div>
+                    </div>
+                </div>
+
+                <div class="win-screen" id="win-screen" style="display: none;">
+                    <div class="bobblehead-container">
+                        <div class="bobblehead">
+                            <div class="head"></div>
+                            <div class="body"></div>
+                            <div class="base"></div>
+                        </div>
+                    </div>
+                    <div class="win-message">
+                        <h2>ACCESS GRANTED</h2>
+                        <p>PASSWORD ACCEPTED</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="pip-footer">
+            <div class="function-description">
+                HACKING: Isolate the correct password. Pair matching brackets to clear duds or reset attempts.
+            </div>
+        </footer>
+    </div>
+
+    <!-- Core Logic -->
+    <script src="../../core/js/main.js"></script>
+    <!-- Tool Logic -->
+    <script src="js/script.js"></script>
+</body>
+
+</html>

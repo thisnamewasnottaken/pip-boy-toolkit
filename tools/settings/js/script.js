@@ -16,7 +16,25 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         if (usernameInput) usernameInput.value = settings.getUserName();
         if (testModeInput) testModeInput.checked = settings.isTestMode();
+
+        const tempUnit = settings.getTempUnit();
+        document.querySelectorAll(".unit-btn").forEach(btn => {
+            if (btn.dataset.unit === tempUnit) {
+                btn.classList.add("active");
+            } else {
+                btn.classList.remove("active");
+            }
+        });
     };
+
+    // Unit toggle interaction
+    document.querySelectorAll(".unit-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+            document.querySelectorAll(".unit-btn").forEach(b => b.classList.remove("active"));
+            btn.classList.add("active");
+            if (window.pipSound) window.pipSound.playClick();
+        });
+    });
 
     // Initial load
     loadValues();
@@ -40,9 +58,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const newName = usernameInput.value.trim() || "VAULTDWELLER";
             const newTestMode = testModeInput.checked;
+            const newTempUnit = document.querySelector(".unit-btn.active").dataset.unit;
 
             settings.setUserName(newName);
             settings.setTestMode(newTestMode);
+            settings.setTempUnit(newTempUnit);
 
             // Visual Feedback
             statusMsg.innerText = "SETTINGS SAVED_";

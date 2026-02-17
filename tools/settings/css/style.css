@@ -111,3 +111,29 @@ input:checked+.slider:before {
 .status-message.visible {
     opacity: 1;
 }
+
+/* Unit Toggle */
+.unit-toggle {
+    display: flex;
+    border: 1px solid var(--pip-green);
+}
+
+.unit-btn {
+    background: transparent;
+    border: none;
+    color: var(--pip-green);
+    font-family: var(--font-main);
+    padding: 0.3rem 0.8rem;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: all 0.2s;
+}
+
+.unit-btn.active {
+    background: var(--pip-green);
+    color: #000;
+}
+
+.unit-btn:hover:not(.active) {
+    background: rgba(20, 244, 11, 0.2);
+}

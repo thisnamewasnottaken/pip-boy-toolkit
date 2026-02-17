@@ -106,6 +106,7 @@ class SettingsManager {
     this.defaults = {
       username: "VAULTDWELLER",
       testMode: false,
+      tempUnit: "C",
     };
     this.settings = this.loadSettings();
   }
@@ -130,6 +131,15 @@ class SettingsManager {
 
   setUserName(name) {
     this.settings.username = name;
+    this.saveSettings();
+  }
+
+  getTempUnit() {
+    return this.settings.tempUnit || "C";
+  }
+
+  setTempUnit(unit) {
+    this.settings.tempUnit = unit;
     this.saveSettings();
   }
 

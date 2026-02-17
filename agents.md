@@ -1,3 +1,34 @@
+# Development Rules
+
+## 1. Code Style & Quality
+- **Strictly follow the existing code style** used in `core/css/main.css` and `core/js/main.js`.
+- **No external libraries** unless explicitly allowed. Use vanilla JavaScript and CSS.
+- **Mobile-First Approach**: Design for mobile screens first, then scale up for desktop.
+- **Accessibility**: Ensure all interactive elements have proper ARIA labels and keyboard navigation.
+
+## 2. UI/UX Guidelines
+- **Color Palette**: Use the `var(--pip-green)` and `var(--pip-amber)` variables defined in `main.css`.
+- **Typography**: Use `Share Tech Mono` for headers and `VT323` for body text.
+- **Responsiveness**: The UI must adapt seamlessly to both portrait and landscape orientations.
+- **No Hardcoded Values**: Avoid using magic numbers. Use CSS variables or configuration constants.
+
+## 3. Performance
+- **Lazy Loading**: Only load assets (images, fonts) when needed.
+- **Minimize DOM Manipulation**: Batch updates where possible.
+- **Memory Management**: Clean up event listeners and timers when components are unmounted.
+
+## 4. Security
+- **API Keys**: Never commit API keys to the repository. Use environment variables or proxy services.
+- **Input Validation**: Sanitize all user inputs to prevent XSS attacks.
+- **Local Storage**: Be mindful of storage quotas and user privacy.
+
+## 5. Testing
+- **Unit Tests**: Create tests for core logic functions.
+- **Integration Tests**: Ensure new modules integrate correctly with the main app.
+- **Cross-Browser Testing**: Verify functionality on Chrome, Firefox, Safari, and Edge.
+
+It's not done until it's tested and working as expected.
+
 # Agent Hand-off: Pip-Boy Toolkit Modules
 
 This file contains the specific prompts and context required for different agents to implement the next three features.

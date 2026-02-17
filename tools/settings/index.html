@@ -25,6 +25,7 @@
             <span class="status-item"><a href="../../index.html">MENU</a></span>
             <span class="status-item"><a href="../pomodoro/index.html">TIMER</a></span>
             <span class="status-item active">SETTINGS</span>
+            <span class="status-item"><a href="../vault-climate/index.html">CLIMATE</a></span>
             <span class="status-item">MAP</span>
             <span class="status-item">RADIO</span>
         </header>
@@ -36,6 +37,18 @@
                     <label for="username-input">USER IDENTIFICATION</label>
                     <div class="setting-description">ENTER TERMINAL USERNAME (MAX 25 CHARS).</div>
                     <input type="text" id="username-input" class="pip-input" placeholder="VAULTDWELLER" maxlength="25">
+                </div>
+
+                <div class="setting-group"
+                    style="flex-direction: row; justify-content: space-between; align-items: center;">
+                    <div>
+                        <label for="temp-unit-input">TEMPERATURE UNIT</label>
+                        <div class="setting-description">DISPLAY UNITS IN CELSIUS OR FAHRENHEIT.</div>
+                    </div>
+                    <div class="unit-toggle" id="temp-unit-toggle">
+                        <button class="unit-btn active" data-unit="C">C&deg;</button>
+                        <button class="unit-btn" data-unit="F">F&deg;</button>
+                    </div>
                 </div>
 
                 <div class="setting-group"
