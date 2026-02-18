@@ -58,15 +58,15 @@ test.describe('Pip-Boy Toolkit Regression Suite', () => {
     test('Navigation should work across all pages', async ({ page }) => {
         await page.goto('/');
 
-        // Go to Settings
-        await page.click('text=SETTINGS');
-        await expect(page).toHaveURL(/.*settings/);
-
-        // Go to Timer
+        // Go to Timer from main menu
         await page.click('text=TIMER');
         await expect(page).toHaveURL(/.*pomodoro/);
 
-        // Return to Menu
+        // Go to Settings from Timer
+        await page.click('text=SETTINGS');
+        await expect(page).toHaveURL(/.*settings/);
+
+        // Return to Menu from Settings
         await page.click('text=MENU');
         await expect(page).toHaveURL(/index.html|$/);
     });
