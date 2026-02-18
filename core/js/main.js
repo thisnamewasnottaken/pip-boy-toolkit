@@ -159,6 +159,17 @@ document.addEventListener("DOMContentLoaded", () => {
   window.pipSound = new SoundManager();
   window.pipSettings = new SettingsManager();
 
+  // Fix viewport height for mobile browsers
+  // Set CSS custom property for real viewport height
+  const setViewportHeight = () => {
+    const vh = window.innerHeight * 0.01;
+    document.documentElement.style.setProperty('--vh', `${vh}px`);
+  };
+  
+  setViewportHeight();
+  window.addEventListener('resize', setViewportHeight);
+  window.addEventListener('orientationchange', setViewportHeight);
+
   // Initialize Welcome Message if on main menu
   const welcomeMsg = document.querySelector(".welcome-text p");
   if (welcomeMsg) {
