@@ -13,8 +13,14 @@ test.describe('Pip-Boy Toolkit Regression Suite', () => {
 
         const header = page.locator('.pip-header');
         await expect(header).toContainText('MENU');
-        await expect(header).toContainText('TIMER');
         await expect(header).toContainText('SETTINGS');
+        
+        // Verify tools are accessible from menu list in body
+        const menuList = page.locator('.menu-list');
+        await expect(menuList).toContainText('POMODORO TIMER');
+        await expect(menuList).toContainText('VAULT CLIMATE');
+        await expect(menuList).toContainText('WASTELAND ROVER');
+        await expect(menuList).toContainText('ENCRYPTION BREAKER');
     });
 
     test('Settings should persist username and enable Test Mode', async ({ page }) => {
@@ -58,17 +64,21 @@ test.describe('Pip-Boy Toolkit Regression Suite', () => {
     test('Navigation should work across all pages', async ({ page }) => {
         await page.goto('/');
 
-        // Go to Timer from main menu
-        await page.click('text=TIMER');
+        // Go to Timer from main menu (click on menu item in body)
+        await page.click('text=POMODORO TIMER');
         await expect(page).toHaveURL(/.*pomodoro/);
 
-        // Go to Settings from Timer
+        // Go to Settings from Timer (header link)
         await page.click('text=SETTINGS');
         await expect(page).toHaveURL(/.*settings/);
 
-        // Return to Menu from Settings
+        // Return to Menu from Settings (header link)
         await page.click('text=MENU');
         await expect(page).toHaveURL(/index.html|$/);
+        
+        // Verify we can navigate to different tool from main menu
+        await page.click('text=VAULT CLIMATE');
+        await expect(page).toHaveURL(/.*vault-climate/);
     });
 
 });
