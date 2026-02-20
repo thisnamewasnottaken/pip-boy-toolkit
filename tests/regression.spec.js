@@ -14,7 +14,7 @@ test.describe('Pip-Boy Toolkit Regression Suite', () => {
         const header = page.locator('.pip-header');
         await expect(header).toContainText('MENU');
         await expect(header).toContainText('SETTINGS');
-        
+
         // Verify tools are accessible from menu list in body
         const menuList = page.locator('.menu-list');
         await expect(menuList).toContainText('POMODORO TIMER');
@@ -75,10 +75,26 @@ test.describe('Pip-Boy Toolkit Regression Suite', () => {
         // Return to Menu from Settings (header link)
         await page.click('text=MENU');
         await expect(page).toHaveURL(/index.html|$/);
-        
+
         // Verify we can navigate to different tool from main menu
         await page.click('text=VAULT CLIMATE');
         await expect(page).toHaveURL(/.*vault-climate/);
+
+        // Return to Menu from Tool (header link)
+        await page.click('text=MENU');
+        await expect(page).toHaveURL(/index.html|$/);
+
+        // Wasteland Rover
+        await page.click('text=WASTELAND ROVER');
+        await expect(page).toHaveURL(/.*wasteland-rover/);
+        await page.click('text=MENU');
+        await expect(page).toHaveURL(/index.html|$/);
+
+        // Encryption Breaker
+        await page.click('text=ENCRYPTION BREAKER');
+        await expect(page).toHaveURL(/.*encryption-breaker/);
+        await page.click('text=MENU');
+        await expect(page).toHaveURL(/index.html|$/);
     });
 
 });

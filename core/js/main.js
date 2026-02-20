@@ -21,6 +21,7 @@ class SoundManager {
   }
 
   playClick() {
+    if (!this.ctx) return;
     if (this.ctx.state === "suspended") this.ctx.resume();
     const osc = this.ctx.createOscillator();
     const gain = this.ctx.createGain();
@@ -40,6 +41,7 @@ class SoundManager {
   }
 
   playAlarm() {
+    if (!this.ctx) return;
     if (this.ctx.state === "suspended") this.ctx.resume();
     const t = this.ctx.currentTime;
     const osc = this.ctx.createOscillator();
@@ -165,7 +167,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const vh = window.innerHeight * 0.01;
     document.documentElement.style.setProperty('--vh', `${vh}px`);
   };
-  
+
   setViewportHeight();
   window.addEventListener('resize', setViewportHeight);
   window.addEventListener('orientationchange', setViewportHeight);
