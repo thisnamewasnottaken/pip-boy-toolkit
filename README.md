@@ -2,7 +2,7 @@
 
 A Fallout-themed Pomodoro timer with authentic Pip-Boy aesthetics from the Fallout series.
 
-![Pip-Boy Pomodoro](vault_boy.png)
+![Pip-Boy Pomodoro](assets/images/vault_boy.png)
 
 ## Features
 
