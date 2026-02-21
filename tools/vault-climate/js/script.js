@@ -9,6 +9,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const FALLBACK_COORDS = { lat: 51.5074, lon: -0.1278, name: "VAULT X44 (LONDON)" };
 
+    const getTempUnit = () => {
+        if (window.pipSettings) return window.pipSettings.getTempUnit();
+        try {
+            const stored = localStorage.getItem("pip-boy-settings");
+            if (stored) {
+                const parsed = JSON.parse(stored);
+                if (parsed && typeof parsed === "object") return parsed.tempUnit || "C";
+            }
+        } catch (e) {}
+        return "C";
+    };
+
     const mapWeatherToFallout = (code) => {
         // WMO Weather interpretation codes
         if (code === 0) return "HIGH VISIBILITY";
@@ -42,14 +54,10 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     const updateUI = async (data, lat, lon, isFallback = false) => {
-        const settings = window.pipSettings;
-        const unit = settings ? settings.getTempUnit() : "C";
+        const unit = getTempUnit();
 
-        // Location Logic
-        let displayLocation = "UNKNOWN SECTOR";
-        if (isFallback) {
-            displayLocation = "VAULT X44 (LONDON)";
-        } else {
+        // Location Logic — fallback location is set before fetch in initialize()
+        if (!isFallback) {
             const latInt = Math.abs(Math.trunc(lat));
             const lonInt = Math.abs(Math.trunc(lon));
             const vaultNum = `${latInt}${lonInt}`;
@@ -58,11 +66,9 @@ document.addEventListener("DOMContentLoaded", () => {
             const fetchedCity = await fetchCity(lat, lon);
             if (fetchedCity) cityName = fetchedCity.toUpperCase();
 
-            displayLocation = `VAULT ${vaultNum} (${cityName})`;
+            locationName.innerText = `VAULT ${vaultNum} (${cityName})`;
+            coordinates.innerText = `[${lat.toFixed(4)}, ${lon.toFixed(4)}]`;
         }
-
-        locationName.innerText = displayLocation;
-        coordinates.innerText = `[${lat.toFixed(4)}, ${lon.toFixed(4)}]`;
 
         weatherCondition.innerText = mapWeatherToFallout(data.current.weather_code);
 
@@ -106,7 +112,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (window.pipSound) window.pipSound.playClick();
     };
 
-    const fetchWeather = async (lat, lon, isFallback = false) => {
+    const fetchWeather = async (lat, lon, isFallback = false, attempt = 1) => {
         try {
             const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,weather_code&daily=uv_index_max&timezone=auto`;
             const response = await fetch(url);
@@ -114,13 +120,26 @@ document.addEventListener("DOMContentLoaded", () => {
             const data = await response.json();
             await updateUI(data, lat, lon, isFallback);
         } catch (error) {
-            console.error("Weather fetch error:", error);
-            locationName.innerText = "SENSOR FAILURE";
+            if (attempt < 3) {
+                console.warn(`Weather fetch attempt ${attempt} failed, retrying...`, error);
+                await new Promise(r => setTimeout(r, 200 * attempt));
+                return fetchWeather(lat, lon, isFallback, attempt + 1);
+            }
+            console.error("Weather fetch error (all attempts failed):", error);
             weatherCondition.innerText = "DATA CORRUPTED";
         }
     };
 
+    const setFallbackLocation = () => {
+        locationName.innerText = FALLBACK_COORDS.name;
+        coordinates.innerText = `[${FALLBACK_COORDS.lat.toFixed(4)}, ${FALLBACK_COORDS.lon.toFixed(4)}]`;
+    };
+
     const initialize = () => {
+        // Set the unit display immediately from settings (before any async fetch)
+        const unit = getTempUnit();
+        tempUnitDisplay.innerHTML = `&deg;${unit}`;
+
         if ("geolocation" in navigator) {
             navigator.geolocation.getCurrentPosition(
                 (position) => {
@@ -128,10 +147,12 @@ document.addEventListener("DOMContentLoaded", () => {
                 },
                 (error) => {
                     console.warn("Geolocation denied, using fallback:", error.message);
+                    setFallbackLocation();
                     fetchWeather(FALLBACK_COORDS.lat, FALLBACK_COORDS.lon, true);
                 }
             );
         } else {
+            setFallbackLocation();
             fetchWeather(FALLBACK_COORDS.lat, FALLBACK_COORDS.lon, true);
         }
     };
