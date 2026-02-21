@@ -83,11 +83,11 @@ The project is actively expanding. Below are the current objectives and upcoming
 - [x] **Automated Deployment**: GitHub Pages integration via GitHub Actions.
 - [x] **Module: Settings**: Browser storage persistence, toggleable test mode, and username customization.
 - [x] **Developer Experience**: Added `package.json` for local `http-server` development and regression testing.
+- [x] **Module: Vault Climate**: Real-time weather reporting via Open-Meteo API. Includes "Rad-Storm" mappings and dynamic temperature unit switching. 
+- [x] **Module: Wasteland Rover**: A side-scrolling Canvas-based mini-game featuring Vault-Tec rovers navigating obstacles.
+- [x] **Module: Encryption Breaker**: Authentic Fallout-style terminal hacking game with "Likeness" mechanics and dud-removal sequences.
 
 ### Upcoming Objectives
-- [ ] **Module: Vault Climate**: Real-time weather reporting via Open-Meteo API. Includes "Rad-Storm" mappings and dynamic temperature unit switching. 
-- [ ] **Module: Wasteland Rover**: A side-scrolling Canvas-based mini-game featuring Vault-Tec rovers navigating obstacles.
-- [ ] **Module: Encryption Breaker**: Authentic Fallout-style terminal hacking game with "Likeness" mechanics and dud-removal sequences.
 - [ ] **Refinement**: Continued cross-browser testing and touch interaction polish for all modules.
 
 
