@@ -74,21 +74,9 @@ This project follows a modular architecture to allow for easy expansion of Pip-B
 
 The project is actively expanding. Below are the current objectives and upcoming features.
 
-### Completed Milestones
-- [x] **Modular Architecture**: Split into `core/` and `tools/` structure.
-- [x] **Retro Pomodoro**: Fully functional timer with authentic CRT effects.
-- [x] **Sound System**: Synthesized Geiger counter and alarm audio via Web Audio API.
-- [x] **Responsive Design**: Optimized for mobile (portrait and landscape) and desktop.
-- [x] **Test Mode**: URL hash-based `#test` mode for debugging finale animations.
-- [x] **Automated Deployment**: GitHub Pages integration via GitHub Actions.
-- [x] **Module: Settings**: Browser storage persistence, toggleable test mode, and username customization.
-- [x] **Developer Experience**: Added `package.json` for local `http-server` development and regression testing.
-- [x] **Module: Vault Climate**: Real-time weather reporting via Open-Meteo API. Includes "Rad-Storm" mappings and dynamic temperature unit switching. 
-- [x] **Module: Wasteland Rover**: A side-scrolling Canvas-based mini-game featuring Vault-Tec rovers navigating obstacles.
-- [x] **Module: Encryption Breaker**: Authentic Fallout-style terminal hacking game with "Likeness" mechanics and dud-removal sequences.
-
 ### Upcoming Objectives
 - [ ] **Refinement**: Continued cross-browser testing and touch interaction polish for all modules.
+- [ ] **Build Specifications**: Build specifications for the toolkit prototype that can be used to generate the full application. This will include an architectural overview, design specifications, and implementation plan.
 
 
 
