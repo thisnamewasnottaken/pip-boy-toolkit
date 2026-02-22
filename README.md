@@ -1,92 +1,225 @@
-# Pip-Boy Toolkit
+# Pip-Boy OS
 
-A Fallout-themed Pomodoro timer with authentic Pip-Boy aesthetics from the Fallout series.
+> **RobCo Industries Unified Operating System v8.0.1**
+>
+> A Fallout-themed personal dashboard featuring dual-mode responsive design: RobCo Terminal (desktop) and Pip-Boy 3000 (mobile).
 
-![Pip-Boy Pomodoro](assets/images/vault_boy.png)
+![License](https://img.shields.io/badge/license-MIT-green)
+![React](https://img.shields.io/badge/React-19-blue)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.8-blue)
+![Vite](https://img.shields.io/badge/Vite-6-purple)
+![Tests](https://img.shields.io/badge/tests-33%20passing-brightgreen)
+
+## Live Demo
+
+**🌐 [thisnamewasnottaken.github.io/pip-boy-toolkit](https://thisnamewasnottaken.github.io/pip-boy-toolkit/)**
 
 ## Features
 
-- **Authentic Pip-Boy Theme**: Monochrome green CRT display with scanlines and screen curvature
-- **Pomodoro Timer**: Three modes - Work (25min), Short Break (5min), Long Break (15min)
-- **Retro Sound Effects**: Synthesized audio using Web Audio API
-  - Button clicks
-  - Continuous Geiger counter radiation sounds
-  - Alarm when timer completes
-- **Nuclear Finale**: Pixel art mushroom cloud explosion when session ends
-- **Pure Vanilla**: No frameworks, just HTML/CSS/JavaScript
+### 🖥️ Dual-Mode Responsive Design
 
-## Usage
+| Desktop (RobCo Terminal) | Mobile (Pip-Boy 3000) |
+|---|---|
+| Side navigation with chunky borders | Bottom tab navigation |
+| Full-width data visualizations | Compact, wrist-mounted aesthetic |
+| CRT scanline overlay with glow effects | Screen glare and curvature simulation |
 
-### Local
+### 📦 Modules
 
-1. Open `index.html` in your browser
-2. Click anywhere to enable audio
-3. Select a mode (WORK/SHORT/LONG)
-4. Click **INITIALIZE** to start
-5. Use **HALT** to pause, **RESET** to restart
+| Module | Description |
+|---|---|
+| **⏱️ Timer** | Pomodoro timer with 25/5 min cycles, escalating audio alerts, and skull animation on completion |
+| **🌤️ Climate** | Real-time weather dashboard with Open-Meteo API, 24h forecast chart, UV/rainfall tracking |
+| **🔓 Hacking** | Fallout-style terminal hacking game with memory dump, word matching, and attempt tracking |
+| **🎮 Piptris** | Tetris clone with level progression, row clearing, and classic scoring system |
+| **⚙️ Settings** | Theme selection (Green/Amber/White/Blue), debug mode toggle, system info display |
 
-### GitHub Pages
+### 🎨 Theme System
 
-Visit: https://thisnamewasnottaken.github.io/pip-boy-toolkit/
+Four terminal color themes, switchable in real-time:
 
-The app is automatically deployed and updated whenever changes are pushed to the main branch.
+- **ROBCO GREEN** — Classic Pip-Boy phosphor green
+- **TERMINAL AMBER** — Warm amber CRT terminal
+- **VAULT-TEC WHITE** — Clean white terminal text
+- **NUKA BLUE** — Cool blue display
+
+All themes include CRT scanline effects, screen flicker, and text glow.
+
+## Tech Stack
+
+| Layer | Technology |
+|---|---|
+| Framework | React 19 + TypeScript 5.8 |
+| Build Tool | Vite 6 |
+| Styling | Tailwind CSS 4 |
+| Animations | Motion (Framer Motion) |
+| Charts | Recharts |
+| Icons | Lucide React |
+| Testing | Vitest + React Testing Library |
+| Deployment | GitHub Pages (automated via Actions) |
+
+## Getting Started
+
+### Prerequisites
+
+- **Node.js** 20+
+- **npm** 10+
+
+### Local Development
+
+```bash
+# Install dependencies
+npm install
+
+# Start dev server (http://localhost:3000)
+npm run dev
+
+# Type check
+npm run lint
+
+# Run tests
+npm test
+
+# Build for production
+npm run build
+
+# Preview production build
+npm run preview
+```
 
 ### Test Mode
 
-Enable **Debug / Test Mode** in the **SETTINGS** module to activate experimental features like the manual explosion trigger. This preference is saved locally for your session. (Legacy support: Appending `#test` to the URL also enables these features).
-
-## Regression Testing
-
-To ensure stability across all modules, this project uses [Playwright](https://playwright.dev/) for automated E2E testing. 
-
-### Running Tests
-1.  **Install**: `npm install`
-2.  **Browser Setup**: `npx playwright install`
-3.  **Run**: `npm test`
-
-The test suite covers:
-- **Main Menu**: Header consistency and navigation.
-- **Timer**: Mode switching and finale animations.
-- **Settings**: Persistent storage and Test Mode integration.
-
-### CI/CD
-Tests are automatically run on every push to the `master` branch. Deployments only proceed if the regression suite passes. ✨
-
-- Vanilla JavaScript (ES6 classes)
-- Web Audio API for sound synthesis
-- CSS3 animations and effects
-- Google Fonts (VT323, Share Tech Mono)
+Navigate to **SETTINGS** → toggle **TEST MODE** to enable accelerated timers (5s work / 3s break) for rapid Pomodoro testing.
 
 ## Project Structure
 
-This project follows a modular architecture to allow for easy expansion of Pip-Boy themed tools.
+```
+pip-boy-toolkit/
+├── index.html              # HTML entry point
+├── vite.config.ts          # Vite + Tailwind + Vitest config
+├── tsconfig.json           # TypeScript configuration
+├── package.json            # Dependencies and scripts
+├── src/
+│   ├── main.tsx            # React entry point
+│   ├── App.tsx             # Root component with SPA routing
+│   ├── index.css           # Tailwind + CRT design system
+│   ├── vite-env.d.ts       # Vite type declarations
+│   ├── components/
+│   │   ├── Layout.tsx      # Dual-mode layout (RobCo + Pip-Boy)
+│   │   ├── Timer.tsx       # Pomodoro timer module
+│   │   ├── Weather.tsx     # Climate/weather dashboard
+│   │   ├── Hacking.tsx     # Terminal hacking game
+│   │   ├── Piptris.tsx     # Tetris clone
+│   │   └── Settings.tsx    # Theme & debug settings
+│   └── test/
+│       ├── setup.ts        # Test library setup
+│       ├── Timer.test.tsx   # Timer unit tests (8)
+│       ├── Hacking.test.tsx # Hacking unit tests (8)
+│       ├── Settings.test.tsx# Settings unit tests (9)
+│       └── Piptris.test.tsx # Piptris unit tests (7)
+├── docs/
+│   ├── ARCHITECTURE.md     # Technical architecture overview
+│   ├── architecture.excalidraw    # System architecture diagram
+│   └── components.excalidraw      # Component relationship diagram
+├── .github/
+│   └── workflows/
+│       └── static.yml      # CI/CD: test → build → deploy
+└── assets/                 # Static assets (images)
+```
 
-- `index.html` - Hub / Main Menu for the toolkit.
-- `core/` - Shared assets and logic for the Pip-Boy aesthetic.
-  - `css/main.css` - CRT effects, colors, and shared layout.
-  - `js/main.js` - Sound synthesis and global UI behaviors.
-- `tools/` - Individual toolkit modules.
-  - `pomodoro/` - The Retro Pomodoro timer.
-- `assets/images/` - Shared image assets (Vault Boy, etc.).
-- `README.md` - You are here.
+## Architecture
 
-## Roadmap
+See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for a detailed technical overview.
 
-The project is actively expanding. Below are the current objectives and upcoming features.
+### Component Hierarchy
 
-### Upcoming Objectives
-- [ ] **Refinement**: Continued cross-browser testing and touch interaction polish for all modules.
-- [ ] **Build Specifications**: Build specifications for the toolkit prototype that can be used to generate the full application. This will include an architectural overview, design specifications, and implementation plan.
+```mermaid
+graph TD
+    App["App.tsx<br/><i>activeApp | theme | debugMode</i>"] --> Layout["Layout.tsx<br/><i>Dual-mode shell</i>"]
+    Layout --> Desktop["Desktop Layout<br/>RobCo Terminal ≥768px"]
+    Layout --> Mobile["Mobile Layout<br/>Pip-Boy 3000 &lt;768px"]
 
+    Layout --> Timer["⏱ Timer.tsx<br/><i>Pomodoro</i>"]
+    Layout --> Weather["🌤 Weather.tsx<br/><i>Climate Dashboard</i>"]
+    Layout --> Hacking["🔓 Hacking.tsx<br/><i>Terminal Game</i>"]
+    Layout --> Piptris["🎮 Piptris.tsx<br/><i>Tetris Clone</i>"]
+    Layout --> Settings["⚙ Settings.tsx<br/><i>Theme & Debug</i>"]
 
+    Settings -.->|setTheme, setDebugMode| App
+    App -->|debugMode| Timer
+    Weather -->|fetch| API["Open-Meteo API"]
+    Timer -->|audio| Audio["Web Audio API"]
 
-## Deployment
+    style App fill:#b2f2bb,stroke:#2f9e44
+    style Layout fill:#ffc9c9,stroke:#e03131
+    style Desktop fill:#fff5f5,stroke:#e03131
+    style Mobile fill:#fff9db,stroke:#f08c00
+    style Timer fill:#a5d8ff,stroke:#1971c2
+    style Weather fill:#a5d8ff,stroke:#1971c2
+    style Hacking fill:#a5d8ff,stroke:#1971c2
+    style Piptris fill:#a5d8ff,stroke:#1971c2
+    style Settings fill:#fff4e6,stroke:#e8590c
+    style API fill:#f8f0fc,stroke:#862e9c
+    style Audio fill:#f8f0fc,stroke:#862e9c
+```
 
-The toolkit is optimized for GitHub Pages. Any changes pushed to the `main` branch are automatically deployed to:
-https://thisnamewasnottaken.github.io/pip-boy-toolkit/
+### Key Design Decisions
+
+- **SPA over Multi-Page**: Single page app with state-based routing for instant module switching and seamless animations
+- **Dual Layout Strategy**: Completely separate desktop (RobCo Terminal) and mobile (Pip-Boy 3000) layouts rather than a single responsive breakpoint
+- **CSS Variables for Theming**: `--term-color` cascades through all components via CSS custom properties, enabling instant theme switching
+- **Static-First Architecture**: No backend required — deployable to any static host (GitHub Pages, Netlify, Vercel)
+- **Open-Meteo API**: Free, no-API-key weather data eliminates key exposure concerns on static hosting
+
+### CI/CD Pipeline
+
+```mermaid
+flowchart LR
+    A["git push<br/>master"] --> B["npm ci"]
+    B --> C["vitest run"]
+    C -->|pass| D["vite build"]
+    C -->|fail| X["❌ Deploy blocked"]
+    D --> E["Upload artifact"]
+    E --> F["Deploy to<br/>GitHub Pages"]
+    F --> G["🌐 Live at<br/>github.io"]
+
+    style A fill:#e9ecef,stroke:#495057
+    style C fill:#d3f9d8,stroke:#2f9e44
+    style X fill:#ffe3e3,stroke:#e03131
+    style F fill:#d0ebff,stroke:#1971c2
+    style G fill:#b2f2bb,stroke:#2f9e44
+```
+
+Tests must pass before deployment proceeds. See `.github/workflows/static.yml`.
+
+## Testing
+
+```bash
+# Run all tests
+npm test
+
+# Run in watch mode
+npm run test:watch
+
+# Run with coverage
+npm run test:coverage
+```
+
+### Test Coverage
+
+| Component | Tests | Coverage |
+|-----------|-------|----------|
+| Timer | 8 | Start/pause, reset, mode switching, countdown, alerts |
+| Hacking | 8 | Word display, guessing, attempts, game over, reboot |
+| Settings | 9 | Theme selection, debug toggle, active states, system info |
+| Piptris | 7 | Board render, grid dimensions, controls, initial state |
+| **Total** | **33** | — |
 
 ## License
-MIT License - Feel free to use and modify!
+
+MIT License — See [LICENSE](LICENSE) for details.
 
 ## Credits
-Inspired by the Fallout series Pip-Boy interface. All code and assets created for this project.
+
+Inspired by the Fallout series Pip-Boy interface by Bethesda Game Studios.
+Built with React, TypeScript, Vite, Tailwind CSS, and Recharts.
