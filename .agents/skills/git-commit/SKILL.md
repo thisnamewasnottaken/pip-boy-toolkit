@@ -1,6 +1,6 @@
 ---
 name: git-commit
-description: 'Execute git commit with conventional commit message analysis, intelligent staging, and message generation. Use when user asks to commit changes, create a git commit, or mentions "/commit". Supports: (1) Auto-detecting type and scope from changes, (2) Generating conventional commit messages from diff, (3) Interactive commit with optional type/scope/description overrides, (4) Intelligent file staging for logical grouping'
+description: 'Execute git commit with conventional commit message analysis, intelligent staging, message generation, and Pull Request creation. Use when user asks to commit changes, create a git commit, or mentions "/commit". Supports: (1) Auto-detecting type and scope, (2) Generating conventional commit messages, (3) Interactive commit, (4) Intelligent staging, (5) Always pushing and creating a GitHub Pull Request.'
 license: MIT
 allowed-tools: Bash
 ---
@@ -106,6 +106,20 @@ git commit -m "$(cat <<'EOF'
 EOF
 )"
 ```
+
+### 5. Push and Create Pull Request (Always)
+
+After successfully committing the changes, you must ALWAYS push the branch and create a Pull Request on GitHub.
+
+```bash
+# 1. Push the current branch to origin
+git push -u origin HEAD
+
+# 2. Create the Pull Request using GitHub CLI (gh)
+# Use the commit message as the PR title.
+gh pr create --title "<type>[scope]: <description>" --body "Automated PR created by agent."
+```
+*Note: If the `gh` CLI is not installed or authenticated, provide the user with the PR creation URL outputted by `git push`.*
 
 ## Best Practices
 
