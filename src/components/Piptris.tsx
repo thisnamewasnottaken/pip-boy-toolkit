@@ -240,7 +240,7 @@ export function Piptris() {
     }, [player, level]);
 
     return (
-        <div className="h-full flex flex-col md:flex-row items-center justify-center gap-8 font-mono outline-none" tabIndex={0} data-testid="piptris-game">
+        <div className="h-full flex flex-col lg:flex-row items-center justify-center gap-8 font-mono outline-none" tabIndex={0} data-testid="piptris-game">
             <div className="border-chunky p-4 bg-black/80">
                 <div className="relative">
                     <div
@@ -278,6 +278,11 @@ export function Piptris() {
                         )}
                     </div>
                 </div>
+                {gameOver && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/70" data-testid="piptris-gameover">
+                        <span className="text-red-500 font-bold text-2xl animate-pulse uppercase tracking-widest">GAME OVER</span>
+                    </div>
+                )}
             </div>
 
             <div className="flex flex-col gap-6 w-48">
@@ -301,12 +306,6 @@ export function Piptris() {
                 >
                     {gameOver ? 'RESTART' : 'START'}
                 </button>
-
-                {gameOver && (
-                    <div className="text-red-500 font-bold text-center animate-pulse uppercase tracking-widest mt-4" data-testid="piptris-gameover">
-                        GAME OVER
-                    </div>
-                )}
 
                 <div className="text-xs opacity-50 text-center mt-4">
                     Use Arrow Keys to Move/Rotate
