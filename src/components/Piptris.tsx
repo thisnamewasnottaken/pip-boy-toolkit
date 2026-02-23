@@ -52,16 +52,19 @@ export function Piptris() {
     const [score, setScore] = useState(0);
     const [rows, setRows] = useState(0);
     const [level, setLevel] = useState(0);
+    const [nextTetromino, setNextTetromino] = useState<TetrominoDef>(TETROMINOS['0']);
 
     const playerRef = useRef(player);
     const stageRef = useRef(stage);
     const gameOverRef = useRef(gameOver);
+    const nextTetrominoRef = useRef(nextTetromino);
 
     useEffect(() => {
         playerRef.current = player;
         stageRef.current = stage;
         gameOverRef.current = gameOver;
-    }, [player, stage, gameOver]);
+        nextTetrominoRef.current = nextTetromino;
+    }, [player, stage, gameOver, nextTetromino]);
 
     const checkCollision = (p: Player, s: Stage, { x: moveX, y: moveY }: { x: number; y: number }) => {
         for (let y = 0; y < p.tetromino.length; y++) {
@@ -94,6 +97,7 @@ export function Piptris() {
             tetromino: randomTetromino().shape,
             collided: false,
         });
+        setNextTetromino(randomTetromino());
         setGameOver(false);
         setScore(0);
         setRows(0);
@@ -211,9 +215,10 @@ export function Piptris() {
             if (player.collided) {
                 setPlayer({
                     pos: { x: COLS / 2 - 2, y: 0 },
-                    tetromino: randomTetromino().shape,
+                    tetromino: nextTetrominoRef.current.shape,
                     collided: false,
                 });
+                setNextTetromino(randomTetromino());
 
                 let rowsCleared = 0;
                 const sweptStage = newStage.reduce((ack: Stage, row) => {
@@ -282,6 +287,33 @@ export function Piptris() {
                 <div className="border-chunky-thin p-4 bg-black/50 text-center">
                     <h3 className="font-bold uppercase tracking-widest mb-2 opacity-80">LEVEL</h3>
                     <p className="text-2xl crt-glow" data-testid="piptris-level">{level}</p>
+                </div>
+
+                <div className="border-chunky-thin p-4 bg-black/50 text-center">
+                    <h3 className="font-bold uppercase tracking-widest mb-3 opacity-80">NEXT</h3>
+                    <div
+                        style={{
+                            display: 'inline-grid',
+                            gridTemplateRows: `repeat(${nextTetromino.shape.length}, 14px)`,
+                            gridTemplateColumns: `repeat(${nextTetromino.shape[0].length}, 14px)`,
+                            gap: '1px',
+                        }}
+                        data-testid="piptris-next-preview"
+                    >
+                        {nextTetromino.shape.map((row, y) =>
+                            row.map((cell, x) => (
+                                <div
+                                    key={`next-${y}-${x}`}
+                                    style={{
+                                        width: '14px',
+                                        height: '14px',
+                                        background: cell === 0 ? 'transparent' : 'var(--term-color)',
+                                        border: cell === 0 ? 'none' : '1px solid var(--term-bg)',
+                                    }}
+                                />
+                            ))
+                        )}
+                    </div>
                 </div>
 
                 <button
