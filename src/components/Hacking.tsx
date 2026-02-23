@@ -96,9 +96,9 @@ export function Hacking() {
                 </p>
             </div>
 
-            <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-8 overflow-hidden">
+            <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-8 overflow-hidden">
                 {/* Memory Dump Area */}
-                <div className="border-chunky-thin p-4 bg-black/50 overflow-y-auto font-mono text-sm md:text-base leading-relaxed">
+                <div className="border-chunky-thin p-4 bg-black/50 overflow-y-auto font-mono text-sm lg:text-base leading-relaxed">
                     {memoryDump.map((line, i) => (
                         <div key={i} className="flex gap-4 mb-1">
                             <span className="opacity-50">{line.hex}</span>

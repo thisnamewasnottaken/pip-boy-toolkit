@@ -22,7 +22,7 @@ export function Settings({ theme, setTheme, debugMode, setDebugMode }: SettingsP
 
             <div className="border-chunky-thin p-6 bg-black/50 mb-8">
                 <h3 className="font-bold uppercase tracking-widest mb-6 border-b border-[var(--term-color)]/30 pb-2">DISPLAY COLOR</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4" data-testid="settings-themes">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4" data-testid="settings-themes">
                     {THEMES.map((t) => (
                         <button
                             key={t.id}
