@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, afterEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Piptris } from '../components/Piptris';
@@ -57,5 +57,56 @@ describe('Piptris', () => {
         render(<Piptris />);
 
         expect(screen.queryByTestId('piptris-gameover')).not.toBeInTheDocument();
+    });
+});
+
+describe('Piptris responsive layout', () => {
+    const originalInnerWidth = window.innerWidth;
+    const originalInnerHeight = window.innerHeight;
+
+    afterEach(() => {
+        Object.defineProperty(window, 'innerWidth', { writable: true, configurable: true, value: originalInnerWidth });
+        Object.defineProperty(window, 'innerHeight', { writable: true, configurable: true, value: originalInnerHeight });
+    });
+
+    it('shows landscape overlay on mobile landscape orientation', () => {
+        Object.defineProperty(window, 'innerWidth', { writable: true, configurable: true, value: 667 });
+        Object.defineProperty(window, 'innerHeight', { writable: true, configurable: true, value: 375 });
+        render(<Piptris />);
+        expect(screen.getByTestId('piptris-landscape-overlay')).toBeInTheDocument();
+    });
+
+    it('does not show landscape overlay in mobile portrait orientation', () => {
+        Object.defineProperty(window, 'innerWidth', { writable: true, configurable: true, value: 375 });
+        Object.defineProperty(window, 'innerHeight', { writable: true, configurable: true, value: 667 });
+        render(<Piptris />);
+        expect(screen.queryByTestId('piptris-landscape-overlay')).not.toBeInTheDocument();
+    });
+
+    it('does not show landscape overlay on desktop', () => {
+        Object.defineProperty(window, 'innerWidth', { writable: true, configurable: true, value: 1920 });
+        Object.defineProperty(window, 'innerHeight', { writable: true, configurable: true, value: 1080 });
+        render(<Piptris />);
+        expect(screen.queryByTestId('piptris-landscape-overlay')).not.toBeInTheDocument();
+    });
+
+    it('uses smaller cell size for mobile portrait to avoid scrolling', () => {
+        Object.defineProperty(window, 'innerWidth', { writable: true, configurable: true, value: 375 });
+        Object.defineProperty(window, 'innerHeight', { writable: true, configurable: true, value: 667 });
+        render(<Piptris />);
+        const board = screen.getByTestId('piptris-board');
+        const firstCell = board.firstElementChild as HTMLElement;
+        const cellHeight = parseInt(firstCell.style.height, 10);
+        expect(cellHeight).toBeLessThan(20);
+    });
+
+    it('uses full cell size on desktop', () => {
+        Object.defineProperty(window, 'innerWidth', { writable: true, configurable: true, value: 1440 });
+        Object.defineProperty(window, 'innerHeight', { writable: true, configurable: true, value: 900 });
+        render(<Piptris />);
+        const board = screen.getByTestId('piptris-board');
+        const firstCell = board.firstElementChild as HTMLElement;
+        const cellHeight = parseInt(firstCell.style.height, 10);
+        expect(cellHeight).toBe(20);
     });
 });
