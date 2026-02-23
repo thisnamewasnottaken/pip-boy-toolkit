@@ -76,6 +76,7 @@ export function Piptris() {
     const playerRef = useRef(player);
     const stageRef = useRef(stage);
     const gameOverRef = useRef(gameOver);
+    const touchStartRef = useRef<{ x: number; y: number } | null>(null);
 
     useEffect(() => {
         playerRef.current = player;
@@ -189,16 +190,18 @@ export function Piptris() {
     };
 
     const move = useCallback(({ keyCode }: { keyCode: number }) => {
-        if (!gameOverRef.current) {
-            if (keyCode === 37) {
-                movePlayer(-1);
-            } else if (keyCode === 39) {
-                movePlayer(1);
-            } else if (keyCode === 40) {
-                dropPlayer();
-            } else if (keyCode === 38) {
-                playerRotate(stageRef.current, 1);
-            }
+        if (gameOverRef.current) {
+            if (keyCode === 32) startGame();
+            return;
+        }
+        if (keyCode === 37) {
+            movePlayer(-1);
+        } else if (keyCode === 39) {
+            movePlayer(1);
+        } else if (keyCode === 40) {
+            dropPlayer();
+        } else if (keyCode === 38) {
+            playerRotate(stageRef.current, 1);
         }
     }, [dropPlayer]);
 
@@ -292,7 +295,32 @@ export function Piptris() {
                 </div>
             )}
 
-            <div className="border-chunky p-2 lg:p-4 bg-black/80 shrink-0">
+            <div
+                className="border-chunky p-2 lg:p-4 bg-black/80 shrink-0"
+                onTouchStart={(e) => {
+                    const t = e.touches[0];
+                    touchStartRef.current = { x: t.clientX, y: t.clientY };
+                }}
+                onTouchEnd={(e) => {
+                    if (gameOverRef.current || !touchStartRef.current) return;
+                    const t = e.changedTouches[0];
+                    const dx = t.clientX - touchStartRef.current.x;
+                    const dy = t.clientY - touchStartRef.current.y;
+                    const SWIPE_THRESHOLD = 30;
+
+                    if (Math.abs(dx) < SWIPE_THRESHOLD && Math.abs(dy) < SWIPE_THRESHOLD) {
+                        // Tap → rotate
+                        playerRotate(stageRef.current, 1);
+                    } else if (Math.abs(dx) > Math.abs(dy)) {
+                        // Horizontal swipe → move left/right
+                        movePlayer(dx > 0 ? 1 : -1);
+                    } else if (dy > SWIPE_THRESHOLD) {
+                        // Swipe down → soft drop
+                        dropPlayer();
+                    }
+                    touchStartRef.current = null;
+                }}
+            >
                 <div className="relative">
                     <div
                         aria-hidden="true"
@@ -330,8 +358,16 @@ export function Piptris() {
                     </div>
                 </div>
                 {gameOver && (
-                    <div className="absolute inset-0 flex items-center justify-center bg-black/70" data-testid="piptris-gameover">
+                    <div
+                        className="absolute inset-0 flex flex-col items-center justify-center bg-black/70 cursor-pointer"
+                        data-testid="piptris-gameover"
+                        onClick={startGame}
+                        role="button"
+                        tabIndex={0}
+                    >
                         <span className="text-red-500 font-bold text-2xl animate-pulse uppercase tracking-widest">GAME OVER</span>
+                        <span className="text-[var(--term-color)] text-xs mt-4 opacity-70 uppercase tracking-wide hidden lg:inline">Click or press Space to restart</span>
+                        <span className="text-[var(--term-color)] text-xs mt-4 opacity-70 uppercase tracking-wide lg:hidden">Tap to restart</span>
                     </div>
                 )}
             </div>
@@ -362,6 +398,9 @@ export function Piptris() {
 
                 <div className="text-xs opacity-50 text-center mt-4 hidden lg:block">
                     Use Arrow Keys to Move/Rotate
+                </div>
+                <div className="text-xs opacity-50 text-center mt-2 lg:hidden">
+                    Swipe ←→ Move · Swipe ↓ Drop · Tap Rotate
                 </div>
             </div>
         </div>
