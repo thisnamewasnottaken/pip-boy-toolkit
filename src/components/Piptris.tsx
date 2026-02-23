@@ -66,6 +66,7 @@ export function Piptris() {
     const [score, setScore] = useState(0);
     const [rows, setRows] = useState(0);
     const [level, setLevel] = useState(0);
+    const [nextTetromino, setNextTetromino] = useState<TetrominoDef>(TETROMINOS['0']);
     const [isLandscapeMobile, setIsLandscapeMobile] = useState<boolean>(
         () => computeLayout().landscapeMobile
     );
@@ -76,13 +77,29 @@ export function Piptris() {
     const playerRef = useRef(player);
     const stageRef = useRef(stage);
     const gameOverRef = useRef(gameOver);
+    const nextTetrominoRef = useRef(nextTetromino);
     const touchStartRef = useRef<{ x: number; y: number } | null>(null);
 
     useEffect(() => {
         playerRef.current = player;
         stageRef.current = stage;
         gameOverRef.current = gameOver;
-    }, [player, stage, gameOver]);
+        nextTetrominoRef.current = nextTetromino;
+    }, [player, stage, gameOver, nextTetromino]);
+
+    useEffect(() => {
+        const updateLayout = () => {
+            const { landscapeMobile, cellSize: size } = computeLayout();
+            setIsLandscapeMobile(landscapeMobile);
+            setCellSize(size);
+        };
+        window.addEventListener('resize', updateLayout);
+        window.addEventListener('orientationchange', updateLayout);
+        return () => {
+            window.removeEventListener('resize', updateLayout);
+            window.removeEventListener('orientationchange', updateLayout);
+        };
+    }, []);
 
     useEffect(() => {
         const updateLayout = () => {
@@ -129,6 +146,7 @@ export function Piptris() {
             tetromino: randomTetromino().shape,
             collided: false,
         });
+        setNextTetromino(randomTetromino());
         setGameOver(false);
         setScore(0);
         setRows(0);
@@ -248,9 +266,10 @@ export function Piptris() {
             if (player.collided) {
                 setPlayer({
                     pos: { x: COLS / 2 - 2, y: 0 },
-                    tetromino: randomTetromino().shape,
+                    tetromino: nextTetrominoRef.current.shape,
                     collided: false,
                 });
+                setNextTetromino(randomTetromino());
 
                 let rowsCleared = 0;
                 const sweptStage = newStage.reduce((ack: Stage, row) => {
@@ -395,6 +414,33 @@ export function Piptris() {
                 >
                     {gameOver ? 'RESTART' : 'START'}
                 </button>
+
+                <div className="border-chunky-thin p-2 lg:p-4 bg-black/50 text-center">
+                    <h3 className="font-bold uppercase tracking-widest mb-1 lg:mb-3 opacity-80 text-xs lg:text-sm">NEXT</h3>
+                    <div
+                        style={{
+                            display: 'inline-grid',
+                            gridTemplateRows: `repeat(${nextTetromino.shape.length}, 12px)`,
+                            gridTemplateColumns: `repeat(${nextTetromino.shape[0].length}, 12px)`,
+                            gap: '1px',
+                        }}
+                        data-testid="piptris-next-preview"
+                    >
+                        {nextTetromino.shape.map((row, y) =>
+                            row.map((cell, x) => (
+                                <div
+                                    key={`next-${y}-${x}`}
+                                    style={{
+                                        width: '12px',
+                                        height: '12px',
+                                        background: cell === 0 ? 'transparent' : 'var(--term-color)',
+                                        border: cell === 0 ? 'none' : '1px solid var(--term-bg)',
+                                    }}
+                                />
+                            ))
+                        )}
+                    </div>
+                </div>
 
                 <div className="text-xs opacity-50 text-center mt-4 hidden lg:block">
                     Use Arrow Keys to Move/Rotate
