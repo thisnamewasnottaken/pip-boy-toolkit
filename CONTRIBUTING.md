@@ -250,7 +250,7 @@ Every module **must** have a corresponding test file before it can be merged. Se
 - Use `var(--term-color)` for all primary text, borders, and glow effects
 - Use Tailwind utility classes for layout and spacing
 - Use the `font-mono` token (VT323) for display text
-- Build for both desktop and mobile layouts
+- Build for both desktop and mobile layouts (cover large flagship iphone, samsung, as well as pixel - e.g. the Pixel 10 Pro).
 - Use smooth animations via Motion (`AnimatePresence`, `motion.div`)
 
 ### Don't

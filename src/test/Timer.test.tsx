@@ -144,4 +144,38 @@ describe('Timer', () => {
         expect(screen.getByTestId('timer-mode')).toHaveTextContent('BREAK CYCLE');
         expect(screen.getByTestId('timer-display')).toHaveTextContent('00:03');
     });
+
+    describe('element visibility', () => {
+        it('renders all core timer elements', () => {
+            render(<Timer />);
+
+            // Mode label and time display
+            expect(screen.getByTestId('timer-mode')).toBeInTheDocument();
+            expect(screen.getByTestId('timer-display')).toBeInTheDocument();
+
+            // Control buttons
+            expect(screen.getByTestId('timer-toggle')).toBeInTheDocument();
+            expect(screen.getByTestId('timer-reset')).toBeInTheDocument();
+
+            // Mode selectors
+            expect(screen.getByTestId('timer-work-mode')).toBeInTheDocument();
+            expect(screen.getByTestId('timer-break-mode')).toBeInTheDocument();
+        });
+
+        it('has correct initial text content for all elements', () => {
+            render(<Timer />);
+
+            expect(screen.getByTestId('timer-mode')).toHaveTextContent('WORK CYCLE');
+            expect(screen.getByTestId('timer-display')).toHaveTextContent('25:00');
+            expect(screen.getByTestId('timer-toggle')).toHaveTextContent('START');
+            expect(screen.getByTestId('timer-reset')).toHaveTextContent('RESET');
+            expect(screen.getByTestId('timer-work-mode')).toHaveTextContent('POMODORO (25M)');
+            expect(screen.getByTestId('timer-break-mode')).toHaveTextContent('SHORT BREAK (5M)');
+        });
+
+        it('renders the timer container', () => {
+            render(<Timer />);
+            expect(screen.getByTestId('timer-container')).toBeInTheDocument();
+        });
+    });
 });
