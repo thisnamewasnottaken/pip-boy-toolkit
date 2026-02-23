@@ -274,7 +274,7 @@ export function Piptris() {
     }, [player, level]);
 
     return (
-        <div className="h-full flex flex-col md:flex-row items-center justify-center gap-2 md:gap-8 font-mono outline-none relative" tabIndex={0} data-testid="piptris-game">
+        <div className="h-full flex flex-col lg:flex-row items-center justify-center gap-2 lg:gap-8 font-mono outline-none relative" tabIndex={0} data-testid="piptris-game">
             {isLandscapeMobile && (
                 <div
                     data-testid="piptris-landscape-overlay"
@@ -292,66 +292,75 @@ export function Piptris() {
                 </div>
             )}
 
-            <div className="border-chunky p-2 md:p-4 bg-black/80 shrink-0">
-                <div
-                    style={{
-                        display: 'grid',
-                        gridTemplateRows: `repeat(${ROWS}, ${cellSize}px)`,
-                        gridTemplateColumns: `repeat(${COLS}, ${cellSize}px)`,
-                        gap: '1px',
-                        background: 'var(--term-color)',
-                        opacity: 0.2
-                    }}
-                    className="relative"
-                    data-testid="piptris-board"
-                >
-                    {stage.map((row, y) =>
-                        row.map((cell, x) => (
-                            <div
-                                key={`${y}-${x}`}
-                                style={{
-                                    width: `${cellSize}px`,
-                                    height: `${cellSize}px`,
-                                    background: cell[0] === 0 ? 'var(--term-bg)' : 'var(--term-color)',
-                                    border: cell[0] === 0 ? 'none' : '1px solid var(--term-bg)',
-                                }}
-                            />
-                        ))
-                    )}
+            <div className="border-chunky p-2 lg:p-4 bg-black/80 shrink-0">
+                <div className="relative">
+                    <div
+                        aria-hidden="true"
+                        style={{
+                            position: 'absolute',
+                            inset: 0,
+                            background: 'var(--term-color)',
+                            opacity: 0.15,
+                        }}
+                    />
+                    <div
+                        style={{
+                            display: 'grid',
+                            gridTemplateRows: `repeat(${ROWS}, ${cellSize}px)`,
+                            gridTemplateColumns: `repeat(${COLS}, ${cellSize}px)`,
+                            gap: '1px',
+                            background: 'transparent',
+                        }}
+                        className="relative"
+                        data-testid="piptris-board"
+                    >
+                        {stage.map((row, y) =>
+                            row.map((cell, x) => (
+                                <div
+                                    key={`${y}-${x}`}
+                                    style={{
+                                        width: `${cellSize}px`,
+                                        height: `${cellSize}px`,
+                                        background: cell[0] === 0 ? 'var(--term-bg)' : 'var(--term-color)',
+                                        border: cell[0] === 0 ? 'none' : '1px solid var(--term-bg)',
+                                    }}
+                                />
+                            ))
+                        )}
+                    </div>
                 </div>
+                {gameOver && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/70" data-testid="piptris-gameover">
+                        <span className="text-red-500 font-bold text-2xl animate-pulse uppercase tracking-widest">GAME OVER</span>
+                    </div>
+                )}
             </div>
 
-            <div className="flex flex-col gap-2 w-full md:gap-6 md:w-48">
-                <div className="flex flex-row gap-2 md:flex-col md:gap-6">
-                    <div className="border-chunky-thin p-2 md:p-4 bg-black/50 text-center flex-1 md:flex-none">
-                        <h3 className="font-bold uppercase tracking-widest mb-0 md:mb-2 opacity-80 text-xs md:text-sm">SCORE</h3>
-                        <p className="text-base md:text-2xl crt-glow" data-testid="piptris-score">{score}</p>
+            <div className="flex flex-col gap-2 w-full lg:gap-6 lg:w-48">
+                <div className="flex flex-row gap-2 lg:flex-col lg:gap-6">
+                    <div className="border-chunky-thin p-2 lg:p-4 bg-black/50 text-center flex-1 lg:flex-none">
+                        <h3 className="font-bold uppercase tracking-widest mb-0 lg:mb-2 opacity-80 text-xs lg:text-sm">SCORE</h3>
+                        <p className="text-base lg:text-2xl crt-glow" data-testid="piptris-score">{score}</p>
                     </div>
-                    <div className="border-chunky-thin p-2 md:p-4 bg-black/50 text-center flex-1 md:flex-none">
-                        <h3 className="font-bold uppercase tracking-widest mb-0 md:mb-2 opacity-80 text-xs md:text-sm">ROWS</h3>
-                        <p className="text-base md:text-2xl crt-glow" data-testid="piptris-rows">{rows}</p>
+                    <div className="border-chunky-thin p-2 lg:p-4 bg-black/50 text-center flex-1 lg:flex-none">
+                        <h3 className="font-bold uppercase tracking-widest mb-0 lg:mb-2 opacity-80 text-xs lg:text-sm">ROWS</h3>
+                        <p className="text-base lg:text-2xl crt-glow" data-testid="piptris-rows">{rows}</p>
                     </div>
-                    <div className="border-chunky-thin p-2 md:p-4 bg-black/50 text-center flex-1 md:flex-none">
-                        <h3 className="font-bold uppercase tracking-widest mb-0 md:mb-2 opacity-80 text-xs md:text-sm">LEVEL</h3>
-                        <p className="text-base md:text-2xl crt-glow" data-testid="piptris-level">{level}</p>
+                    <div className="border-chunky-thin p-2 lg:p-4 bg-black/50 text-center flex-1 lg:flex-none">
+                        <h3 className="font-bold uppercase tracking-widest mb-0 lg:mb-2 opacity-80 text-xs lg:text-sm">LEVEL</h3>
+                        <p className="text-base lg:text-2xl crt-glow" data-testid="piptris-level">{level}</p>
                     </div>
                 </div>
 
                 <button
                     onClick={startGame}
-                    className="border-chunky-thin p-2 md:p-4 hover:bg-[var(--term-color)] hover:text-[var(--term-bg)] transition-colors font-bold uppercase tracking-widest md:mt-4 text-xs md:text-base"
+                    className="border-chunky-thin p-2 lg:p-4 hover:bg-[var(--term-color)] hover:text-[var(--term-bg)] transition-colors font-bold uppercase tracking-widest lg:mt-4 text-xs lg:text-base"
                     data-testid="piptris-start"
                 >
                     {gameOver ? 'RESTART' : 'START'}
                 </button>
 
-                {gameOver && (
-                    <div className="text-red-500 font-bold text-center animate-pulse uppercase tracking-widest md:mt-4 text-xs md:text-base" data-testid="piptris-gameover">
-                        GAME OVER
-                    </div>
-                )}
-
-                <div className="text-xs opacity-50 text-center mt-4 hidden md:block">
+                <div className="text-xs opacity-50 text-center mt-4 hidden lg:block">
                     Use Arrow Keys to Move/Rotate
                 </div>
             </div>
