@@ -10,10 +10,6 @@
 ![Vite](https://img.shields.io/badge/Vite-6-purple)
 ![Tests](https://img.shields.io/badge/tests-33%20passing-brightgreen)
 
-## Live Demo
-
-**🌐 [thisnamewasnottaken.github.io/pip-boy-toolkit](https://thisnamewasnottaken.github.io/pip-boy-toolkit/)**
-
 ## Features
 
 ### 🖥️ Dual-Mode Responsive Design
