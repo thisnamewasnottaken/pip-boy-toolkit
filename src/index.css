@@ -1,0 +1,86 @@
+@import "tailwindcss";
+
+@theme {
+  --color-term-green: #4ade80;
+  --color-term-amber: #fbbf24;
+  --color-term-white: #f8fafc;
+  --color-term-blue: #60a5fa;
+  --color-term-bg: #050505;
+  --font-mono: 'VT323', 'Courier New', Courier, monospace;
+}
+
+@layer base {
+  :root {
+    --term-color: var(--color-term-green);
+    --term-bg: var(--color-term-bg);
+  }
+
+  .theme-green { --term-color: var(--color-term-green); }
+  .theme-amber { --term-color: var(--color-term-amber); }
+  .theme-white { --term-color: var(--color-term-white); }
+  .theme-blue { --term-color: var(--color-term-blue); }
+
+  body {
+    background-color: var(--term-bg);
+    color: var(--term-color);
+    font-family: var(--font-mono);
+    overflow: hidden;
+  }
+
+  ::selection {
+    background: var(--term-color);
+    color: var(--term-bg);
+  }
+}
+
+@layer utilities {
+  .crt-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 50;
+    background: linear-gradient(
+      rgba(18, 16, 16, 0) 50%,
+      rgba(0, 0, 0, 0.25) 50%
+    );
+    background-size: 100% 4px;
+    animation: scanlines 10s linear infinite;
+  }
+
+  .crt-flicker {
+    animation: flicker 0.15s infinite;
+  }
+
+  .crt-glow {
+    text-shadow: 0 0 5px var(--term-color), 0 0 10px var(--term-color);
+  }
+
+  .border-chunky {
+    border: 4px solid var(--term-color);
+    box-shadow: inset 0 0 10px var(--term-color), 0 0 10px var(--term-color);
+  }
+
+  .border-chunky-thin {
+    border: 2px solid var(--term-color);
+    box-shadow: inset 0 0 5px var(--term-color), 0 0 5px var(--term-color);
+  }
+
+  .bg-term {
+    background-color: var(--term-color);
+    color: var(--term-bg);
+  }
+}
+
+@keyframes scanlines {
+  0% { background-position: 0 0; }
+  100% { background-position: 0 100vh; }
+}
+
+@keyframes flicker {
+  0% { opacity: 0.95; }
+  50% { opacity: 0.85; }
+  100% { opacity: 0.95; }
+}

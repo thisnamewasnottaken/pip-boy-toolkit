@@ -1,3 +1,9 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+
 # Editor directories and files
 .vscode/
 .idea/
@@ -13,18 +19,22 @@ Thumbs.db
 *.log
 npm-debug.log*
 
-# Dependencies
-node_modules/
-
-# Playwright
+# Test output
+coverage/
 test-results/
 playwright-report/
 blob-report/
 playwright/.cache/
 
 # Temporary files
-test_output.txt
 .last-run.json
 
 # Local task tracking
 tasks.md
+
+# Environment variables
+.env*
+!.env.example
+
+# REAL_DEAL reference (AI Studio export)
+REAL_DEAL/
