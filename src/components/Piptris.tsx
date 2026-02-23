@@ -268,6 +268,11 @@ export function Piptris() {
                         ))
                     )}
                 </div>
+                {gameOver && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/70" data-testid="piptris-gameover">
+                        <span className="text-red-500 font-bold text-2xl animate-pulse uppercase tracking-widest">GAME OVER</span>
+                    </div>
+                )}
             </div>
 
             <div className="flex flex-col gap-6 w-48">
@@ -291,12 +296,6 @@ export function Piptris() {
                 >
                     {gameOver ? 'RESTART' : 'START'}
                 </button>
-
-                {gameOver && (
-                    <div className="text-red-500 font-bold text-center animate-pulse uppercase tracking-widest mt-4" data-testid="piptris-gameover">
-                        GAME OVER
-                    </div>
-                )}
 
                 <div className="text-xs opacity-50 text-center mt-4">
                     Use Arrow Keys to Move/Rotate
