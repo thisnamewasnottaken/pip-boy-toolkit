@@ -21,5 +21,11 @@ export default defineConfig({
         environment: 'jsdom',
         setupFiles: './src/test/setup.ts',
         css: true,
+        coverage: {
+            provider: 'v8',
+            // 'text' → terminal table, 'json' → Codecov, 'json-summary' → PR comment action, 'html' → local browser report
+            reporter: ['text', 'json', 'json-summary', 'html'],
+            reportsDirectory: './coverage',
+        },
     },
 });

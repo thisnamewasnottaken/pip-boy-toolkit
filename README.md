@@ -8,7 +8,8 @@
 ![React](https://img.shields.io/badge/React-19-blue)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.8-blue)
 ![Vite](https://img.shields.io/badge/Vite-6-purple)
-![Tests](https://img.shields.io/badge/tests-33%20passing-brightgreen)
+[![CI/CD](https://github.com/thisnamewasnottaken/pip-boy-toolkit/actions/workflows/static.yml/badge.svg)](https://github.com/thisnamewasnottaken/pip-boy-toolkit/actions/workflows/static.yml)
+![Coverage](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fthisnamewasnottaken.github.io%2Fpip-boy-toolkit%2Fcoverage-summary.json&query=%24.total.lines.pct&suffix=%25&label=coverage&color=4ade80)
 
 ## Features
 
@@ -24,11 +25,11 @@
 
 | Module | Description |
 |---|---|
-| **⏱️ Timer** | Pomodoro timer with 25/5 min cycles, escalating audio alerts, and skull animation on completion |
-| **🌤️ Climate** | Real-time weather dashboard with Open-Meteo API, 24h forecast chart, UV/rainfall tracking |
-| **🔓 Hacking** | Fallout-style terminal hacking game with memory dump, word matching, and attempt tracking |
-| **🎮 Piptris** | Tetris clone with level progression, row clearing, and classic scoring system |
-| **⚙️ Settings** | Theme selection (Green/Amber/White/Blue), debug mode toggle, system info display |
+| **Timer** | Pomodoro timer with 25/5 min cycles, escalating audio alerts, and skull animation on completion |
+| **Climate** | Real-time weather dashboard with Open-Meteo API, 24h forecast chart, UV/rainfall tracking |
+| **Hacking** | Fallout-style terminal hacking game with memory dump, word matching, and attempt tracking |
+| **Piptris** | Tetris clone with level progression, row clearing, and classic scoring system |
+| **Settings** | Theme selection (Green/Amber/White/Blue), debug mode toggle, system info display |
 
 ### 🎨 Theme System
 
@@ -203,13 +204,17 @@ npm run test:coverage
 
 ### Test Coverage
 
-| Component | Tests | Coverage |
-|-----------|-------|----------|
+Live coverage is tracked by [Codecov](https://codecov.io/gh/thisnamewasnottaken/pip-boy-toolkit) and updated on every push to `master`. Click the badge at the top of this file for a full breakdown.
+
+| Component | Tests | What's covered |
+|-----------|-------|----------------|
 | Timer | 8 | Start/pause, reset, mode switching, countdown, alerts |
 | Hacking | 8 | Word display, guessing, attempts, game over, reboot |
 | Settings | 9 | Theme selection, debug toggle, active states, system info |
 | Piptris | 7 | Board render, grid dimensions, controls, initial state |
-| **Total** | **33** | — |
+| **Total** | **33** | |
+
+Run `npm run test:coverage` locally for a full V8 report in `coverage/`.
 
 ## License
 
