@@ -40,6 +40,20 @@ interface Player {
     collided: boolean;
 }
 
+const MOBILE_UI_OVERHEAD = 300; // px: fixed chrome (status bar, nav, padding, borders)
+
+const computeLayout = () => {
+    const isMobile = window.innerWidth < 1024;
+    const isLandscape = window.innerWidth > window.innerHeight;
+    const landscapeMobile = isMobile && isLandscape;
+    let size = 20;
+    if (isMobile && !isLandscape) {
+        const available = window.innerHeight - MOBILE_UI_OVERHEAD;
+        size = Math.max(10, Math.min(20, Math.floor(available / ROWS)));
+    }
+    return { landscapeMobile, cellSize: size };
+};
+
 export function Piptris() {
     const [dropTime, setDropTime] = useState<number | null>(null);
     const [gameOver, setGameOver] = useState(false);
@@ -52,6 +66,12 @@ export function Piptris() {
     const [score, setScore] = useState(0);
     const [rows, setRows] = useState(0);
     const [level, setLevel] = useState(0);
+    const [isLandscapeMobile, setIsLandscapeMobile] = useState<boolean>(
+        () => computeLayout().landscapeMobile
+    );
+    const [cellSize, setCellSize] = useState<number>(
+        () => computeLayout().cellSize
+    );
 
     const playerRef = useRef(player);
     const stageRef = useRef(stage);
@@ -62,6 +82,20 @@ export function Piptris() {
         stageRef.current = stage;
         gameOverRef.current = gameOver;
     }, [player, stage, gameOver]);
+
+    useEffect(() => {
+        const updateLayout = () => {
+            const { landscapeMobile, cellSize: size } = computeLayout();
+            setIsLandscapeMobile(landscapeMobile);
+            setCellSize(size);
+        };
+        window.addEventListener('resize', updateLayout);
+        window.addEventListener('orientationchange', updateLayout);
+        return () => {
+            window.removeEventListener('resize', updateLayout);
+            window.removeEventListener('orientationchange', updateLayout);
+        };
+    }, []);
 
     const checkCollision = (p: Player, s: Stage, { x: moveX, y: moveY }: { x: number; y: number }) => {
         for (let y = 0; y < p.tetromino.length; y++) {
@@ -240,13 +274,30 @@ export function Piptris() {
     }, [player, level]);
 
     return (
-        <div className="h-full flex flex-col md:flex-row items-center justify-center gap-8 font-mono outline-none" tabIndex={0} data-testid="piptris-game">
-            <div className="border-chunky p-4 bg-black/80">
+        <div className="h-full flex flex-col md:flex-row items-center justify-center gap-2 md:gap-8 font-mono outline-none relative" tabIndex={0} data-testid="piptris-game">
+            {isLandscapeMobile && (
+                <div
+                    data-testid="piptris-landscape-overlay"
+                    className="absolute inset-0 flex flex-col items-center justify-center z-50 bg-black/95"
+                >
+                    <div className="border-chunky-thin p-8 text-center">
+                        <p className="text-5xl mb-4 crt-glow">↻</p>
+                        <h2 className="text-xl font-bold tracking-widest uppercase mb-2 crt-glow">
+                            ROTATE DEVICE
+                        </h2>
+                        <p className="text-sm opacity-70 uppercase tracking-wide">
+                            Portrait mode required
+                        </p>
+                    </div>
+                </div>
+            )}
+
+            <div className="border-chunky p-2 md:p-4 bg-black/80 shrink-0">
                 <div
                     style={{
                         display: 'grid',
-                        gridTemplateRows: `repeat(${ROWS}, 20px)`,
-                        gridTemplateColumns: `repeat(${COLS}, 20px)`,
+                        gridTemplateRows: `repeat(${ROWS}, ${cellSize}px)`,
+                        gridTemplateColumns: `repeat(${COLS}, ${cellSize}px)`,
                         gap: '1px',
                         background: 'var(--term-color)',
                         opacity: 0.2
@@ -259,8 +310,8 @@ export function Piptris() {
                             <div
                                 key={`${y}-${x}`}
                                 style={{
-                                    width: '20px',
-                                    height: '20px',
+                                    width: `${cellSize}px`,
+                                    height: `${cellSize}px`,
                                     background: cell[0] === 0 ? 'var(--term-bg)' : 'var(--term-color)',
                                     border: cell[0] === 0 ? 'none' : '1px solid var(--term-bg)',
                                 }}
@@ -270,35 +321,37 @@ export function Piptris() {
                 </div>
             </div>
 
-            <div className="flex flex-col gap-6 w-48">
-                <div className="border-chunky-thin p-4 bg-black/50 text-center">
-                    <h3 className="font-bold uppercase tracking-widest mb-2 opacity-80">SCORE</h3>
-                    <p className="text-2xl crt-glow" data-testid="piptris-score">{score}</p>
-                </div>
-                <div className="border-chunky-thin p-4 bg-black/50 text-center">
-                    <h3 className="font-bold uppercase tracking-widest mb-2 opacity-80">ROWS</h3>
-                    <p className="text-2xl crt-glow" data-testid="piptris-rows">{rows}</p>
-                </div>
-                <div className="border-chunky-thin p-4 bg-black/50 text-center">
-                    <h3 className="font-bold uppercase tracking-widest mb-2 opacity-80">LEVEL</h3>
-                    <p className="text-2xl crt-glow" data-testid="piptris-level">{level}</p>
+            <div className="flex flex-col gap-2 w-full md:gap-6 md:w-48">
+                <div className="flex flex-row gap-2 md:flex-col md:gap-6">
+                    <div className="border-chunky-thin p-2 md:p-4 bg-black/50 text-center flex-1 md:flex-none">
+                        <h3 className="font-bold uppercase tracking-widest mb-0 md:mb-2 opacity-80 text-xs md:text-sm">SCORE</h3>
+                        <p className="text-base md:text-2xl crt-glow" data-testid="piptris-score">{score}</p>
+                    </div>
+                    <div className="border-chunky-thin p-2 md:p-4 bg-black/50 text-center flex-1 md:flex-none">
+                        <h3 className="font-bold uppercase tracking-widest mb-0 md:mb-2 opacity-80 text-xs md:text-sm">ROWS</h3>
+                        <p className="text-base md:text-2xl crt-glow" data-testid="piptris-rows">{rows}</p>
+                    </div>
+                    <div className="border-chunky-thin p-2 md:p-4 bg-black/50 text-center flex-1 md:flex-none">
+                        <h3 className="font-bold uppercase tracking-widest mb-0 md:mb-2 opacity-80 text-xs md:text-sm">LEVEL</h3>
+                        <p className="text-base md:text-2xl crt-glow" data-testid="piptris-level">{level}</p>
+                    </div>
                 </div>
 
                 <button
                     onClick={startGame}
-                    className="border-chunky-thin p-4 hover:bg-[var(--term-color)] hover:text-[var(--term-bg)] transition-colors font-bold uppercase tracking-widest mt-4"
+                    className="border-chunky-thin p-2 md:p-4 hover:bg-[var(--term-color)] hover:text-[var(--term-bg)] transition-colors font-bold uppercase tracking-widest md:mt-4 text-xs md:text-base"
                     data-testid="piptris-start"
                 >
                     {gameOver ? 'RESTART' : 'START'}
                 </button>
 
                 {gameOver && (
-                    <div className="text-red-500 font-bold text-center animate-pulse uppercase tracking-widest mt-4" data-testid="piptris-gameover">
+                    <div className="text-red-500 font-bold text-center animate-pulse uppercase tracking-widest md:mt-4 text-xs md:text-base" data-testid="piptris-gameover">
                         GAME OVER
                     </div>
                 )}
 
-                <div className="text-xs opacity-50 text-center mt-4">
+                <div className="text-xs opacity-50 text-center mt-4 hidden md:block">
                     Use Arrow Keys to Move/Rotate
                 </div>
             </div>
