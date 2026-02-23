@@ -34,11 +34,15 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Run unit tests
-        run: npm test
+      - name: Run unit tests with coverage
+        run: npm run test:coverage
 
       - name: Build
         run: npm run build
+
+      - name: Copy coverage to dist
+        # This allows Shields.io to create a dynamic badge from your own hosted JSON
+        run: cp coverage/coverage-summary.json dist/coverage-summary.json
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
