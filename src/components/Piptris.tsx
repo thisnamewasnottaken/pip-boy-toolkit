@@ -242,31 +242,41 @@ export function Piptris() {
     return (
         <div className="h-full flex flex-col lg:flex-row items-center justify-center gap-8 font-mono outline-none" tabIndex={0} data-testid="piptris-game">
             <div className="border-chunky p-4 bg-black/80">
-                <div
-                    style={{
-                        display: 'grid',
-                        gridTemplateRows: `repeat(${ROWS}, 20px)`,
-                        gridTemplateColumns: `repeat(${COLS}, 20px)`,
-                        gap: '1px',
-                        background: 'var(--term-color)',
-                        opacity: 0.2
-                    }}
-                    className="relative"
-                    data-testid="piptris-board"
-                >
-                    {stage.map((row, y) =>
-                        row.map((cell, x) => (
-                            <div
-                                key={`${y}-${x}`}
-                                style={{
-                                    width: '20px',
-                                    height: '20px',
-                                    background: cell[0] === 0 ? 'var(--term-bg)' : 'var(--term-color)',
-                                    border: cell[0] === 0 ? 'none' : '1px solid var(--term-bg)',
-                                }}
-                            />
-                        ))
-                    )}
+                <div className="relative">
+                    <div
+                        aria-hidden="true"
+                        style={{
+                            position: 'absolute',
+                            inset: 0,
+                            background: 'var(--term-color)',
+                            opacity: 0.15,
+                        }}
+                    />
+                    <div
+                        style={{
+                            display: 'grid',
+                            gridTemplateRows: `repeat(${ROWS}, 20px)`,
+                            gridTemplateColumns: `repeat(${COLS}, 20px)`,
+                            gap: '1px',
+                            background: 'transparent',
+                        }}
+                        className="relative"
+                        data-testid="piptris-board"
+                    >
+                        {stage.map((row, y) =>
+                            row.map((cell, x) => (
+                                <div
+                                    key={`${y}-${x}`}
+                                    style={{
+                                        width: '20px',
+                                        height: '20px',
+                                        background: cell[0] === 0 ? 'var(--term-bg)' : 'var(--term-color)',
+                                        border: cell[0] === 0 ? 'none' : '1px solid var(--term-bg)',
+                                    }}
+                                />
+                            ))
+                        )}
+                    </div>
                 </div>
                 {gameOver && (
                     <div className="absolute inset-0 flex items-center justify-center bg-black/70" data-testid="piptris-gameover">
