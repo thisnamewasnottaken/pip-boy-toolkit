@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, afterEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Piptris } from '../components/Piptris';
@@ -58,8 +58,60 @@ describe('Piptris', () => {
 
         expect(screen.queryByTestId('piptris-gameover')).not.toBeInTheDocument();
     });
+});
 
-    // Next block preview tests
+describe('Piptris responsive layout', () => {
+    const originalInnerWidth = window.innerWidth;
+    const originalInnerHeight = window.innerHeight;
+
+    afterEach(() => {
+        Object.defineProperty(window, 'innerWidth', { writable: true, configurable: true, value: originalInnerWidth });
+        Object.defineProperty(window, 'innerHeight', { writable: true, configurable: true, value: originalInnerHeight });
+    });
+
+    it('shows landscape overlay on mobile landscape orientation', () => {
+        Object.defineProperty(window, 'innerWidth', { writable: true, configurable: true, value: 667 });
+        Object.defineProperty(window, 'innerHeight', { writable: true, configurable: true, value: 375 });
+        render(<Piptris />);
+        expect(screen.getByTestId('piptris-landscape-overlay')).toBeInTheDocument();
+    });
+
+    it('does not show landscape overlay in mobile portrait orientation', () => {
+        Object.defineProperty(window, 'innerWidth', { writable: true, configurable: true, value: 375 });
+        Object.defineProperty(window, 'innerHeight', { writable: true, configurable: true, value: 667 });
+        render(<Piptris />);
+        expect(screen.queryByTestId('piptris-landscape-overlay')).not.toBeInTheDocument();
+    });
+
+    it('does not show landscape overlay on desktop', () => {
+        Object.defineProperty(window, 'innerWidth', { writable: true, configurable: true, value: 1920 });
+        Object.defineProperty(window, 'innerHeight', { writable: true, configurable: true, value: 1080 });
+        render(<Piptris />);
+        expect(screen.queryByTestId('piptris-landscape-overlay')).not.toBeInTheDocument();
+    });
+
+    it('uses smaller cell size for mobile portrait to avoid scrolling', () => {
+        Object.defineProperty(window, 'innerWidth', { writable: true, configurable: true, value: 375 });
+        Object.defineProperty(window, 'innerHeight', { writable: true, configurable: true, value: 667 });
+        render(<Piptris />);
+        const board = screen.getByTestId('piptris-board');
+        const firstCell = board.firstElementChild as HTMLElement;
+        const cellHeight = parseInt(firstCell.style.height, 10);
+        expect(cellHeight).toBeLessThan(20);
+    });
+
+    it('uses full cell size on desktop', () => {
+        Object.defineProperty(window, 'innerWidth', { writable: true, configurable: true, value: 1440 });
+        Object.defineProperty(window, 'innerHeight', { writable: true, configurable: true, value: 900 });
+        render(<Piptris />);
+        const board = screen.getByTestId('piptris-board');
+        const firstCell = board.firstElementChild as HTMLElement;
+        const cellHeight = parseInt(firstCell.style.height, 10);
+        expect(cellHeight).toBe(20);
+    });
+});
+
+describe('Piptris next block preview', () => {
     it('renders the NEXT preview panel', () => {
         render(<Piptris />);
 
@@ -90,7 +142,6 @@ describe('Piptris', () => {
         const user = userEvent.setup();
         render(<Piptris />);
 
-        // Start, then restart
         await user.click(screen.getByTestId('piptris-start'));
         await user.click(screen.getByTestId('piptris-start'));
 
@@ -102,7 +153,7 @@ describe('Piptris', () => {
     it('next preview uses deterministic shape when Math.random is seeded', async () => {
         // Force player → I (index 0 in 'IJLOSTZ') and nextTetromino → O (index 3 in 'IJLOSTZ')
         const mockRandom = vi.spyOn(Math, 'random')
-            .mockReturnValueOnce(0)    // player → I
+            .mockReturnValueOnce(0)      // player → I
             .mockReturnValueOnce(3 / 7); // nextTetromino → O
 
         const user = userEvent.setup();
@@ -110,37 +161,9 @@ describe('Piptris', () => {
         await user.click(screen.getByTestId('piptris-start'));
 
         const preview = screen.getByTestId('piptris-next-preview');
-        // O-tetromino shape is 2x2 = 4 cells
+        // O-tetromino shape is 2×2 = 4 cells
         expect(preview.children.length).toBe(4);
 
         mockRandom.mockRestore();
-    });
-
-    describe('Math.random cleanup', () => {
-        let randomSpy: ReturnType<typeof vi.spyOn>;
-
-        beforeEach(() => {
-            randomSpy = vi.spyOn(Math, 'random');
-        });
-
-        afterEach(() => {
-            randomSpy.mockRestore();
-        });
-
-        it('selects different tetrominoes for player and next on each game start', async () => {
-            // Force player → I (index 0 in 'IJLOSTZ', shape is 4 rows × 4 cols = 16 grid cells)
-            // Force next  → Z (index 6 in 'IJLOSTZ', shape is 3 rows × 3 cols = 9 grid cells)
-            randomSpy
-                .mockReturnValueOnce(0)        // player → I
-                .mockReturnValueOnce(6 / 7);   // next  → Z
-
-            const user = userEvent.setup();
-            render(<Piptris />);
-            await user.click(screen.getByTestId('piptris-start'));
-
-            const preview = screen.getByTestId('piptris-next-preview');
-            // Z shape is 3 rows × 3 cols = 9 cells
-            expect(preview.children.length).toBe(9);
-        });
     });
 });

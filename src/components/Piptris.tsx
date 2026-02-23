@@ -40,6 +40,20 @@ interface Player {
     collided: boolean;
 }
 
+const MOBILE_UI_OVERHEAD = 300; // px: fixed chrome (status bar, nav, padding, borders)
+
+const computeLayout = () => {
+    const isMobile = window.innerWidth < 1024;
+    const isLandscape = window.innerWidth > window.innerHeight;
+    const landscapeMobile = isMobile && isLandscape;
+    let size = 20;
+    if (isMobile && !isLandscape) {
+        const available = window.innerHeight - MOBILE_UI_OVERHEAD;
+        size = Math.max(10, Math.min(20, Math.floor(available / ROWS)));
+    }
+    return { landscapeMobile, cellSize: size };
+};
+
 export function Piptris() {
     const [dropTime, setDropTime] = useState<number | null>(null);
     const [gameOver, setGameOver] = useState(false);
@@ -53,11 +67,18 @@ export function Piptris() {
     const [rows, setRows] = useState(0);
     const [level, setLevel] = useState(0);
     const [nextTetromino, setNextTetromino] = useState<TetrominoDef>(TETROMINOS['0']);
+    const [isLandscapeMobile, setIsLandscapeMobile] = useState<boolean>(
+        () => computeLayout().landscapeMobile
+    );
+    const [cellSize, setCellSize] = useState<number>(
+        () => computeLayout().cellSize
+    );
 
     const playerRef = useRef(player);
     const stageRef = useRef(stage);
     const gameOverRef = useRef(gameOver);
     const nextTetrominoRef = useRef(nextTetromino);
+    const touchStartRef = useRef<{ x: number; y: number } | null>(null);
 
     useEffect(() => {
         playerRef.current = player;
@@ -65,6 +86,20 @@ export function Piptris() {
         gameOverRef.current = gameOver;
         nextTetrominoRef.current = nextTetromino;
     }, [player, stage, gameOver, nextTetromino]);
+
+    useEffect(() => {
+        const updateLayout = () => {
+            const { landscapeMobile, cellSize: size } = computeLayout();
+            setIsLandscapeMobile(landscapeMobile);
+            setCellSize(size);
+        };
+        window.addEventListener('resize', updateLayout);
+        window.addEventListener('orientationchange', updateLayout);
+        return () => {
+            window.removeEventListener('resize', updateLayout);
+            window.removeEventListener('orientationchange', updateLayout);
+        };
+    }, []);
 
     const checkCollision = (p: Player, s: Stage, { x: moveX, y: moveY }: { x: number; y: number }) => {
         for (let y = 0; y < p.tetromino.length; y++) {
@@ -159,16 +194,18 @@ export function Piptris() {
     };
 
     const move = useCallback(({ keyCode }: { keyCode: number }) => {
-        if (!gameOverRef.current) {
-            if (keyCode === 37) {
-                movePlayer(-1);
-            } else if (keyCode === 39) {
-                movePlayer(1);
-            } else if (keyCode === 40) {
-                dropPlayer();
-            } else if (keyCode === 38) {
-                playerRotate(stageRef.current, 1);
-            }
+        if (gameOverRef.current) {
+            if (keyCode === 32) startGame();
+            return;
+        }
+        if (keyCode === 37) {
+            movePlayer(-1);
+        } else if (keyCode === 39) {
+            movePlayer(1);
+        } else if (keyCode === 40) {
+            dropPlayer();
+        } else if (keyCode === 38) {
+            playerRotate(stageRef.current, 1);
         }
     }, [dropPlayer]);
 
@@ -245,57 +282,132 @@ export function Piptris() {
     }, [player, level]);
 
     return (
-        <div className="h-full flex flex-col md:flex-row items-center justify-center gap-8 font-mono outline-none" tabIndex={0} data-testid="piptris-game">
-            <div className="border-chunky p-4 bg-black/80">
+        <div className="h-full flex flex-col lg:flex-row items-center justify-center gap-2 lg:gap-8 font-mono outline-none relative" tabIndex={0} data-testid="piptris-game">
+            {isLandscapeMobile && (
                 <div
-                    style={{
-                        display: 'grid',
-                        gridTemplateRows: `repeat(${ROWS}, 20px)`,
-                        gridTemplateColumns: `repeat(${COLS}, 20px)`,
-                        gap: '1px',
-                        background: 'var(--term-color)',
-                        opacity: 0.2
-                    }}
-                    className="relative"
-                    data-testid="piptris-board"
+                    data-testid="piptris-landscape-overlay"
+                    className="absolute inset-0 flex flex-col items-center justify-center z-50 bg-black/95"
                 >
-                    {stage.map((row, y) =>
-                        row.map((cell, x) => (
-                            <div
-                                key={`${y}-${x}`}
-                                style={{
-                                    width: '20px',
-                                    height: '20px',
-                                    background: cell[0] === 0 ? 'var(--term-bg)' : 'var(--term-color)',
-                                    border: cell[0] === 0 ? 'none' : '1px solid var(--term-bg)',
-                                }}
-                            />
-                        ))
-                    )}
+                    <div className="border-chunky-thin p-8 text-center">
+                        <p className="text-5xl mb-4 crt-glow">↻</p>
+                        <h2 className="text-xl font-bold tracking-widest uppercase mb-2 crt-glow">
+                            ROTATE DEVICE
+                        </h2>
+                        <p className="text-sm opacity-70 uppercase tracking-wide">
+                            Portrait mode required
+                        </p>
+                    </div>
                 </div>
+            )}
+
+            <div
+                className="border-chunky p-2 lg:p-4 bg-black/80 shrink-0"
+                onTouchStart={(e) => {
+                    const t = e.touches[0];
+                    touchStartRef.current = { x: t.clientX, y: t.clientY };
+                }}
+                onTouchEnd={(e) => {
+                    if (gameOverRef.current || !touchStartRef.current) return;
+                    const t = e.changedTouches[0];
+                    const dx = t.clientX - touchStartRef.current.x;
+                    const dy = t.clientY - touchStartRef.current.y;
+                    const SWIPE_THRESHOLD = 30;
+
+                    if (Math.abs(dx) < SWIPE_THRESHOLD && Math.abs(dy) < SWIPE_THRESHOLD) {
+                        // Tap → rotate
+                        playerRotate(stageRef.current, 1);
+                    } else if (Math.abs(dx) > Math.abs(dy)) {
+                        // Horizontal swipe → move left/right
+                        movePlayer(dx > 0 ? 1 : -1);
+                    } else if (dy > SWIPE_THRESHOLD) {
+                        // Swipe down → soft drop
+                        dropPlayer();
+                    }
+                    touchStartRef.current = null;
+                }}
+            >
+                <div className="relative">
+                    <div
+                        aria-hidden="true"
+                        style={{
+                            position: 'absolute',
+                            inset: 0,
+                            background: 'var(--term-color)',
+                            opacity: 0.15,
+                        }}
+                    />
+                    <div
+                        style={{
+                            display: 'grid',
+                            gridTemplateRows: `repeat(${ROWS}, ${cellSize}px)`,
+                            gridTemplateColumns: `repeat(${COLS}, ${cellSize}px)`,
+                            gap: '1px',
+                            background: 'transparent',
+                        }}
+                        className="relative"
+                        data-testid="piptris-board"
+                    >
+                        {stage.map((row, y) =>
+                            row.map((cell, x) => (
+                                <div
+                                    key={`${y}-${x}`}
+                                    style={{
+                                        width: `${cellSize}px`,
+                                        height: `${cellSize}px`,
+                                        background: cell[0] === 0 ? 'var(--term-bg)' : 'var(--term-color)',
+                                        border: cell[0] === 0 ? 'none' : '1px solid var(--term-bg)',
+                                    }}
+                                />
+                            ))
+                        )}
+                    </div>
+                </div>
+                {gameOver && (
+                    <div
+                        className="absolute inset-0 flex flex-col items-center justify-center bg-black/70 cursor-pointer"
+                        data-testid="piptris-gameover"
+                        onClick={startGame}
+                        role="button"
+                        tabIndex={0}
+                    >
+                        <span className="text-red-500 font-bold text-2xl animate-pulse uppercase tracking-widest">GAME OVER</span>
+                        <span className="text-[var(--term-color)] text-xs mt-4 opacity-70 uppercase tracking-wide hidden lg:inline">Click or press Space to restart</span>
+                        <span className="text-[var(--term-color)] text-xs mt-4 opacity-70 uppercase tracking-wide lg:hidden">Tap to restart</span>
+                    </div>
+                )}
             </div>
 
-            <div className="flex flex-col gap-6 w-48">
-                <div className="border-chunky-thin p-4 bg-black/50 text-center">
-                    <h3 className="font-bold uppercase tracking-widest mb-2 opacity-80">SCORE</h3>
-                    <p className="text-2xl crt-glow" data-testid="piptris-score">{score}</p>
-                </div>
-                <div className="border-chunky-thin p-4 bg-black/50 text-center">
-                    <h3 className="font-bold uppercase tracking-widest mb-2 opacity-80">ROWS</h3>
-                    <p className="text-2xl crt-glow" data-testid="piptris-rows">{rows}</p>
-                </div>
-                <div className="border-chunky-thin p-4 bg-black/50 text-center">
-                    <h3 className="font-bold uppercase tracking-widest mb-2 opacity-80">LEVEL</h3>
-                    <p className="text-2xl crt-glow" data-testid="piptris-level">{level}</p>
+            <div className="flex flex-col gap-2 w-full lg:gap-6 lg:w-48">
+                <div className="flex flex-row gap-2 lg:flex-col lg:gap-6">
+                    <div className="border-chunky-thin p-2 lg:p-4 bg-black/50 text-center flex-1 lg:flex-none">
+                        <h3 className="font-bold uppercase tracking-widest mb-0 lg:mb-2 opacity-80 text-xs lg:text-sm">SCORE</h3>
+                        <p className="text-base lg:text-2xl crt-glow" data-testid="piptris-score">{score}</p>
+                    </div>
+                    <div className="border-chunky-thin p-2 lg:p-4 bg-black/50 text-center flex-1 lg:flex-none">
+                        <h3 className="font-bold uppercase tracking-widest mb-0 lg:mb-2 opacity-80 text-xs lg:text-sm">ROWS</h3>
+                        <p className="text-base lg:text-2xl crt-glow" data-testid="piptris-rows">{rows}</p>
+                    </div>
+                    <div className="border-chunky-thin p-2 lg:p-4 bg-black/50 text-center flex-1 lg:flex-none">
+                        <h3 className="font-bold uppercase tracking-widest mb-0 lg:mb-2 opacity-80 text-xs lg:text-sm">LEVEL</h3>
+                        <p className="text-base lg:text-2xl crt-glow" data-testid="piptris-level">{level}</p>
+                    </div>
                 </div>
 
-                <div className="border-chunky-thin p-4 bg-black/50 text-center">
-                    <h3 className="font-bold uppercase tracking-widest mb-3 opacity-80">NEXT</h3>
+                <button
+                    onClick={startGame}
+                    className="border-chunky-thin p-2 lg:p-4 hover:bg-[var(--term-color)] hover:text-[var(--term-bg)] transition-colors font-bold uppercase tracking-widest lg:mt-4 text-xs lg:text-base"
+                    data-testid="piptris-start"
+                >
+                    {gameOver ? 'RESTART' : 'START'}
+                </button>
+
+                <div className="border-chunky-thin p-2 lg:p-4 bg-black/50 text-center">
+                    <h3 className="font-bold uppercase tracking-widest mb-1 lg:mb-3 opacity-80 text-xs lg:text-sm">NEXT</h3>
                     <div
                         style={{
                             display: 'inline-grid',
-                            gridTemplateRows: `repeat(${nextTetromino.shape.length}, 14px)`,
-                            gridTemplateColumns: `repeat(${nextTetromino.shape[0].length}, 14px)`,
+                            gridTemplateRows: `repeat(${nextTetromino.shape.length}, 12px)`,
+                            gridTemplateColumns: `repeat(${nextTetromino.shape[0].length}, 12px)`,
                             gap: '1px',
                         }}
                         data-testid="piptris-next-preview"
@@ -305,8 +417,8 @@ export function Piptris() {
                                 <div
                                     key={`next-${y}-${x}`}
                                     style={{
-                                        width: '14px',
-                                        height: '14px',
+                                        width: '12px',
+                                        height: '12px',
                                         background: cell === 0 ? 'transparent' : 'var(--term-color)',
                                         border: cell === 0 ? 'none' : '1px solid var(--term-bg)',
                                     }}
@@ -316,22 +428,11 @@ export function Piptris() {
                     </div>
                 </div>
 
-                <button
-                    onClick={startGame}
-                    className="border-chunky-thin p-4 hover:bg-[var(--term-color)] hover:text-[var(--term-bg)] transition-colors font-bold uppercase tracking-widest mt-4"
-                    data-testid="piptris-start"
-                >
-                    {gameOver ? 'RESTART' : 'START'}
-                </button>
-
-                {gameOver && (
-                    <div className="text-red-500 font-bold text-center animate-pulse uppercase tracking-widest mt-4" data-testid="piptris-gameover">
-                        GAME OVER
-                    </div>
-                )}
-
-                <div className="text-xs opacity-50 text-center mt-4">
+                <div className="text-xs opacity-50 text-center mt-4 hidden lg:block">
                     Use Arrow Keys to Move/Rotate
+                </div>
+                <div className="text-xs opacity-50 text-center mt-2 lg:hidden">
+                    Swipe ←→ Move · Swipe ↓ Drop · Tap Rotate
                 </div>
             </div>
         </div>
