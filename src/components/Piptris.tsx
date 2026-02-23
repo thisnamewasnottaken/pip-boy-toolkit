@@ -101,6 +101,20 @@ export function Piptris() {
         };
     }, []);
 
+    useEffect(() => {
+        const updateLayout = () => {
+            const { landscapeMobile, cellSize: size } = computeLayout();
+            setIsLandscapeMobile(landscapeMobile);
+            setCellSize(size);
+        };
+        window.addEventListener('resize', updateLayout);
+        window.addEventListener('orientationchange', updateLayout);
+        return () => {
+            window.removeEventListener('resize', updateLayout);
+            window.removeEventListener('orientationchange', updateLayout);
+        };
+    }, []);
+
     const checkCollision = (p: Player, s: Stage, { x: moveX, y: moveY }: { x: number; y: number }) => {
         for (let y = 0; y < p.tetromino.length; y++) {
             for (let x = 0; x < p.tetromino[y].length; x++) {
