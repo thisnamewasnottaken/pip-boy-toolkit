@@ -15,10 +15,21 @@
     --term-bg: var(--color-term-bg);
   }
 
-  .theme-green { --term-color: var(--color-term-green); }
-  .theme-amber { --term-color: var(--color-term-amber); }
-  .theme-white { --term-color: var(--color-term-white); }
-  .theme-blue { --term-color: var(--color-term-blue); }
+  .theme-green {
+    --term-color: var(--color-term-green);
+  }
+
+  .theme-amber {
+    --term-color: var(--color-term-amber);
+  }
+
+  .theme-white {
+    --term-color: var(--color-term-white);
+  }
+
+  .theme-blue {
+    --term-color: var(--color-term-blue);
+  }
 
   body {
     background-color: var(--term-bg);
@@ -42,10 +53,8 @@
     height: 100vh;
     pointer-events: none;
     z-index: 50;
-    background: linear-gradient(
-      rgba(18, 16, 16, 0) 50%,
-      rgba(0, 0, 0, 0.25) 50%
-    );
+    background: linear-gradient(rgba(18, 16, 16, 0) 50%,
+        rgba(0, 0, 0, 0.25) 50%);
     background-size: 100% 4px;
     animation: scanlines 10s linear infinite;
   }
@@ -72,15 +81,38 @@
     background-color: var(--term-color);
     color: var(--term-bg);
   }
+
+  /* Hide scrollbars globally on mobile while keeping scroll functionality */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 @keyframes scanlines {
-  0% { background-position: 0 0; }
-  100% { background-position: 0 100vh; }
+  0% {
+    background-position: 0 0;
+  }
+
+  100% {
+    background-position: 0 100vh;
+  }
 }
 
 @keyframes flicker {
-  0% { opacity: 0.95; }
-  50% { opacity: 0.85; }
-  100% { opacity: 0.95; }
+  0% {
+    opacity: 0.95;
+  }
+
+  50% {
+    opacity: 0.85;
+  }
+
+  100% {
+    opacity: 0.95;
+  }
 }
