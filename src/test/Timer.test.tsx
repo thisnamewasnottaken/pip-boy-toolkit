@@ -150,60 +150,96 @@ describe('Timer', () => {
         expect(screen.getByTestId('timer-display')).toHaveTextContent('00:03');
     });
 
-    it('corrects timer when page becomes visible after being hidden', () => {
-        render(<Timer debugMode={true} />);
+    describe('element visibility', () => {
+        it('renders all core timer elements', () => {
+            render(<Timer />);
 
-        // Start timer (debug mode: work = 5s)
-        act(() => { fireEvent.click(screen.getByTestId('timer-toggle')); });
-        expect(screen.getByTestId('timer-display')).toHaveTextContent('00:05');
+            // Mode label and time display
+            expect(screen.getByTestId('timer-mode')).toBeInTheDocument();
+            expect(screen.getByTestId('timer-display')).toBeInTheDocument();
 
-        // Advance fake system clock by 3s without running the interval
-        // (simulates browser throttling the interval while backgrounded)
-        act(() => { vi.setSystemTime(Date.now() + 3000); });
+            // Control buttons
+            expect(screen.getByTestId('timer-toggle')).toBeInTheDocument();
+            expect(screen.getByTestId('timer-reset')).toBeInTheDocument();
 
-        // Page becomes visible again — handler should correct timeLeft
-        act(() => {
-            Object.defineProperty(document, 'visibilityState', { value: 'visible', configurable: true });
-            document.dispatchEvent(new Event('visibilitychange'));
+            // Mode selectors
+            expect(screen.getByTestId('timer-work-mode')).toBeInTheDocument();
+            expect(screen.getByTestId('timer-break-mode')).toBeInTheDocument();
         });
 
-        expect(screen.getByTestId('timer-display')).toHaveTextContent('00:02');
-    });
+        it('has correct initial text content for all elements', () => {
+            render(<Timer />);
 
-    it('triggers alert when page becomes visible and timer has already expired', () => {
-        render(<Timer debugMode={true} />);
-
-        // Start timer (debug mode: work = 5s)
-        act(() => { fireEvent.click(screen.getByTestId('timer-toggle')); });
-
-        // Advance system clock past the full duration without running intervals
-        act(() => { vi.setSystemTime(Date.now() + 6000); });
-
-        // Page becomes visible — remaining time is negative, should trigger completion
-        act(() => {
-            Object.defineProperty(document, 'visibilityState', { value: 'visible', configurable: true });
-            document.dispatchEvent(new Event('visibilitychange'));
+            expect(screen.getByTestId('timer-mode')).toHaveTextContent('WORK CYCLE');
+            expect(screen.getByTestId('timer-display')).toHaveTextContent('25:00');
+            expect(screen.getByTestId('timer-toggle')).toHaveTextContent('START');
+            expect(screen.getByTestId('timer-reset')).toHaveTextContent('RESET');
+            expect(screen.getByTestId('timer-work-mode')).toHaveTextContent('POMODORO (25M)');
+            expect(screen.getByTestId('timer-break-mode')).toHaveTextContent('SHORT BREAK (5M)');
         });
 
-        expect(screen.getByTestId('timer-alert')).toBeInTheDocument();
-        expect(screen.getByText('CYCLE COMPLETE')).toBeInTheDocument();
+        it('renders the timer container', () => {
+            render(<Timer />);
+            expect(screen.getByTestId('timer-container')).toBeInTheDocument();
+        });
     });
 
-    it('sends a notification when timer completes and permission is granted', () => {
-        Object.defineProperty(Notification, 'permission', { value: 'granted', configurable: true });
-        render(<Timer debugMode={true} />);
+    describe('background timing', () => {
+        it('corrects timer when page becomes visible after being hidden', () => {
+            render(<Timer debugMode={true} />);
 
-        act(() => { fireEvent.click(screen.getByTestId('timer-toggle')); });
-        act(() => { vi.advanceTimersByTime(5000); });
+            // Start timer (debug mode: work = 5s)
+            act(() => { fireEvent.click(screen.getByTestId('timer-toggle')); });
+            expect(screen.getByTestId('timer-display')).toHaveTextContent('00:05');
 
-        expect(Notification).toHaveBeenCalledWith('Pip-Boy Timer', expect.objectContaining({ body: 'CYCLE COMPLETE' }));
-    });
+            // Advance fake system clock by 3s without running the interval
+            // (simulates browser throttling the interval while backgrounded)
+            act(() => { vi.setSystemTime(Date.now() + 3000); });
 
-    it('requests notification permission when timer starts', () => {
-        render(<Timer />);
+            // Page becomes visible again — handler should correct timeLeft
+            act(() => {
+                Object.defineProperty(document, 'visibilityState', { value: 'visible', configurable: true });
+                document.dispatchEvent(new Event('visibilitychange'));
+            });
 
-        act(() => { fireEvent.click(screen.getByTestId('timer-toggle')); });
+            expect(screen.getByTestId('timer-display')).toHaveTextContent('00:02');
+        });
 
-        expect(Notification.requestPermission).toHaveBeenCalled();
+        it('triggers alert when page becomes visible and timer has already expired', () => {
+            render(<Timer debugMode={true} />);
+
+            // Start timer (debug mode: work = 5s)
+            act(() => { fireEvent.click(screen.getByTestId('timer-toggle')); });
+
+            // Advance system clock past the full duration without running intervals
+            act(() => { vi.setSystemTime(Date.now() + 6000); });
+
+            // Page becomes visible — remaining time is negative, should trigger completion
+            act(() => {
+                Object.defineProperty(document, 'visibilityState', { value: 'visible', configurable: true });
+                document.dispatchEvent(new Event('visibilitychange'));
+            });
+
+            expect(screen.getByTestId('timer-alert')).toBeInTheDocument();
+            expect(screen.getByText('CYCLE COMPLETE')).toBeInTheDocument();
+        });
+
+        it('sends a notification when timer completes and permission is granted', () => {
+            Object.defineProperty(Notification, 'permission', { value: 'granted', configurable: true });
+            render(<Timer debugMode={true} />);
+
+            act(() => { fireEvent.click(screen.getByTestId('timer-toggle')); });
+            act(() => { vi.advanceTimersByTime(5000); });
+
+            expect(Notification).toHaveBeenCalledWith('Pip-Boy Timer', expect.objectContaining({ body: 'CYCLE COMPLETE' }));
+        });
+
+        it('requests notification permission when timer starts', () => {
+            render(<Timer />);
+
+            act(() => { fireEvent.click(screen.getByTestId('timer-toggle')); });
+
+            expect(Notification.requestPermission).toHaveBeenCalled();
+        });
     });
 });

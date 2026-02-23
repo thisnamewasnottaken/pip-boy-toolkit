@@ -124,7 +124,7 @@ export function Timer({ debugMode = false }: TimerProps) {
     };
 
     return (
-        <div className="flex flex-col items-center justify-center h-full space-y-4 md:space-y-8 relative">
+        <div className="flex flex-col items-center justify-center h-full relative overflow-hidden" data-testid="timer-container">
             <AnimatePresence>
                 {showAnimation && (
                     <motion.div
@@ -151,49 +151,61 @@ export function Timer({ debugMode = false }: TimerProps) {
                 )}
             </AnimatePresence>
 
-            <div className="text-center">
-                <h2 className="text-xl md:text-2xl font-bold uppercase tracking-widest mb-2" data-testid="timer-mode">
-                    {mode === 'work' ? 'WORK CYCLE' : 'BREAK CYCLE'}
-                </h2>
-                <div className="text-6xl md:text-9xl font-mono font-bold tracking-tighter crt-glow" data-testid="timer-display">
-                    {formatTime(timeLeft)}
+            {/*
+              Mobile landscape: horizontal layout — timer left, controls right
+              Portrait + desktop: vertical centered layout
+            */}
+            <div className="landscape:flex landscape:lg:block landscape:items-center landscape:gap-6 landscape:w-full landscape:justify-center contents lg:contents">
+                {/* Timer display + mode label */}
+                <div className="text-center shrink-0">
+                    <h2 className="text-lg lg:text-2xl font-bold uppercase tracking-widest mb-1 lg:mb-2" data-testid="timer-mode">
+                        {mode === 'work' ? 'WORK CYCLE' : 'BREAK CYCLE'}
+                    </h2>
+                    <div className="text-5xl lg:text-9xl font-mono font-bold tracking-tighter crt-glow" data-testid="timer-display">
+                        {formatTime(timeLeft)}
+                    </div>
                 </div>
-            </div>
 
-            <div className="flex gap-2 md:gap-4">
-                <button
-                    onClick={toggleTimer}
-                    className="p-3 md:p-4 border-chunky-thin hover:bg-[var(--term-color)] hover:text-[var(--term-bg)] transition-colors flex items-center gap-2 uppercase font-bold text-sm md:text-base"
-                    data-testid="timer-toggle"
-                >
-                    {isActive ? <Pause size={20} className="md:w-6 md:h-6" /> : <Play size={20} className="md:w-6 md:h-6" />}
-                    {isActive ? 'PAUSE' : 'START'}
-                </button>
-                <button
-                    onClick={resetTimer}
-                    className="p-3 md:p-4 border-chunky-thin hover:bg-[var(--term-color)] hover:text-[var(--term-bg)] transition-colors flex items-center gap-2 uppercase font-bold text-sm md:text-base"
-                    data-testid="timer-reset"
-                >
-                    <RotateCcw size={20} className="md:w-6 md:h-6" />
-                    RESET
-                </button>
-            </div>
+                {/* Controls group */}
+                <div className="flex flex-col items-center gap-2 lg:gap-4 mt-3 lg:mt-8 landscape:mt-0 shrink-0">
+                    {/* Start/Pause + Reset */}
+                    <div className="flex gap-2 lg:gap-4">
+                        <button
+                            onClick={toggleTimer}
+                            className="p-2 lg:p-4 border-chunky-thin hover:bg-[var(--term-color)] hover:text-[var(--term-bg)] transition-colors flex items-center gap-1.5 uppercase font-bold text-xs lg:text-base"
+                            data-testid="timer-toggle"
+                        >
+                            {isActive ? <Pause size={16} className="lg:w-6 lg:h-6" /> : <Play size={16} className="lg:w-6 lg:h-6" />}
+                            {isActive ? 'PAUSE' : 'START'}
+                        </button>
+                        <button
+                            onClick={resetTimer}
+                            className="p-2 lg:p-4 border-chunky-thin hover:bg-[var(--term-color)] hover:text-[var(--term-bg)] transition-colors flex items-center gap-1.5 uppercase font-bold text-xs lg:text-base"
+                            data-testid="timer-reset"
+                        >
+                            <RotateCcw size={16} className="lg:w-6 lg:h-6" />
+                            RESET
+                        </button>
+                    </div>
 
-            <div className="flex gap-2 md:gap-4 mt-4 md:mt-8">
-                <button
-                    onClick={() => { setMode('work'); setTimeLeft(getWorkTime()); setIsActive(false); endTimeRef.current = null; }}
-                    className={`px-3 md:px-6 py-2 border-b-2 uppercase font-bold text-xs md:text-base ${mode === 'work' ? 'border-[var(--term-color)]' : 'border-transparent opacity-50'}`}
-                    data-testid="timer-work-mode"
-                >
-                    POMODORO (25M)
-                </button>
-                <button
-                    onClick={() => { setMode('break'); setTimeLeft(getBreakTime()); setIsActive(false); endTimeRef.current = null; }}
-                    className={`px-3 md:px-6 py-2 border-b-2 uppercase font-bold text-xs md:text-base ${mode === 'break' ? 'border-[var(--term-color)]' : 'border-transparent opacity-50'}`}
-                    data-testid="timer-break-mode"
-                >
-                    SHORT BREAK (5M)
-                </button>
+                    {/* Mode selectors */}
+                    <div className="flex gap-2 lg:gap-4">
+                        <button
+                            onClick={() => { setMode('work'); setTimeLeft(getWorkTime()); setIsActive(false); endTimeRef.current = null; }}
+                            className={`px-2 lg:px-6 py-1.5 lg:py-2 border-b-2 uppercase font-bold text-[10px] lg:text-base ${mode === 'work' ? 'border-[var(--term-color)]' : 'border-transparent opacity-50'}`}
+                            data-testid="timer-work-mode"
+                        >
+                            POMODORO (25M)
+                        </button>
+                        <button
+                            onClick={() => { setMode('break'); setTimeLeft(getBreakTime()); setIsActive(false); endTimeRef.current = null; }}
+                            className={`px-2 lg:px-6 py-1.5 lg:py-2 border-b-2 uppercase font-bold text-[10px] lg:text-base ${mode === 'break' ? 'border-[var(--term-color)]' : 'border-transparent opacity-50'}`}
+                            data-testid="timer-break-mode"
+                        >
+                            SHORT BREAK (5M)
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     );
