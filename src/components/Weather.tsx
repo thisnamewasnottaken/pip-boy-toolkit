@@ -32,6 +32,9 @@ export function Weather() {
     const [locationError, setLocationError] = useState<string | null>(null);
 
     useEffect(() => {
+        const controller = new AbortController();
+        const { signal } = controller;
+
         const fetchWeather = async () => {
             try {
                 let lat = DEFAULT_LOCATION.lat;
@@ -62,6 +65,8 @@ export function Weather() {
                     setLocationStatus('unavailable');
                 }
 
+                if (signal.aborted) return;
+
                 if (!geoSuccess) {
                     lat = DEFAULT_LOCATION.lat;
                     lon = DEFAULT_LOCATION.lon;
@@ -69,7 +74,7 @@ export function Weather() {
 
                 setLocation({ lat, lon });
 
-                const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=temperature_2m,rain,uv_index,weather_code&past_days=1`);
+                const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=temperature_2m,rain,uv_index,weather_code&past_days=1`, { signal });
                 const json = await res.json();
 
                 if (json.hourly) {
@@ -106,13 +111,20 @@ export function Weather() {
                     setCurrentUV(cUV);
                 }
             } catch (error) {
+                if (error instanceof Error && error.name === 'AbortError') return;
                 console.error("Failed to fetch weather data:", error);
             } finally {
-                setLoading(false);
+                if (!signal.aborted) {
+                    setLoading(false);
+                }
             }
         };
 
         fetchWeather();
+
+        return () => {
+            controller.abort();
+        };
     }, []);
 
     if (loading) {
