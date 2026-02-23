@@ -26,24 +26,24 @@ const MODULE_TITLES: Record<AppId, string> = {
 
 export function Layout({ children, activeApp, setActiveApp }: LayoutProps) {
     return (
-        <div className="h-[100dvh] w-full flex flex-col p-2 md:p-8 crt-flicker relative overflow-hidden">
-            <div className="crt-overlay hidden md:block"></div>
+        <div className="h-[100dvh] w-full flex flex-col p-2 lg:p-8 crt-flicker relative overflow-hidden">
+            <div className="crt-overlay hidden lg:block"></div>
 
             {/* Unified Layout Container */}
-            <div className="flex flex-col md:flex-row w-full h-full flex-1 md:border-none md:rounded-none md:bg-transparent md:shadow-none border-4 border-[var(--term-color)] rounded-3xl overflow-hidden bg-black/80 relative shadow-[inset_0_0_20px_var(--term-color)] z-20">
+            <div className="flex flex-col lg:flex-row w-full h-full flex-1 lg:border-none lg:rounded-none lg:bg-transparent lg:shadow-none border-4 border-[var(--term-color)] rounded-3xl overflow-hidden bg-black/80 relative shadow-[inset_0_0_20px_var(--term-color)] z-20">
 
                 {/* Mobile Glare / Curve Effect */}
-                <div className="md:hidden absolute inset-0 pointer-events-none rounded-3xl shadow-[inset_0_0_50px_rgba(0,0,0,0.8)] z-10"></div>
-                <div className="md:hidden absolute inset-0 pointer-events-none rounded-3xl bg-gradient-to-br from-white/5 to-transparent z-10"></div>
+                <div className="lg:hidden absolute inset-0 pointer-events-none rounded-3xl shadow-[inset_0_0_50px_rgba(0,0,0,0.8)] z-10"></div>
+                <div className="lg:hidden absolute inset-0 pointer-events-none rounded-3xl bg-gradient-to-br from-white/5 to-transparent z-10"></div>
 
                 {/* Mobile Top Status Bar */}
-                <div className="md:hidden h-8 shrink-0 border-b-2 border-[var(--term-color)] flex items-center justify-between px-4 text-xs font-bold tracking-widest bg-[var(--term-color)]/10 z-20">
+                <div className="lg:hidden h-8 shrink-0 border-b-2 border-[var(--term-color)] flex items-center justify-between px-4 text-xs font-bold tracking-widest bg-[var(--term-color)]/10 z-20">
                     <span>HP 100/100</span>
                     <span>AP 90/90</span>
                 </div>
 
                 {/* Desktop Nav */}
-                <nav className="hidden md:flex flex-col justify-start gap-4 mr-8 w-64 shrink-0">
+                <nav className="hidden lg:flex flex-col justify-start gap-4 mr-8 w-64 shrink-0">
                     <div className="mb-8">
                         <h1 className="text-3xl font-bold crt-glow">ROBCO IND.</h1>
                         <p className="text-sm opacity-80">UNIFIED OPERATING SYSTEM</p>
@@ -69,14 +69,14 @@ export function Layout({ children, activeApp, setActiveApp }: LayoutProps) {
                 </nav>
 
                 {/* Main Shared Screen Area */}
-                <main className="flex-1 flex flex-col relative overflow-hidden z-20 md:border-chunky md:bg-black/40 md:backdrop-blur-sm">
+                <main className="flex-1 flex flex-col relative overflow-hidden z-20 lg:border-chunky lg:bg-black/40 lg:backdrop-blur-sm">
                     {/* Desktop Top Bar */}
-                    <div className="hidden md:flex absolute top-0 left-0 w-full h-8 border-b-2 border-[var(--term-color)] items-center px-4 justify-between bg-[var(--term-color)]/10">
+                    <div className="hidden lg:flex absolute top-0 left-0 w-full h-8 border-b-2 border-[var(--term-color)] items-center px-4 justify-between bg-[var(--term-color)]/10">
                         <span className="font-bold tracking-widest uppercase">{MODULE_TITLES[activeApp]}</span>
                         <span className="animate-pulse">_</span>
                     </div>
 
-                    <div className="flex-1 overflow-y-auto p-4 md:p-8 md:mt-8">
+                    <div className="flex-1 overflow-y-auto scrollbar-hide p-4 lg:p-8 lg:mt-8">
                         <motion.div
                             key={activeApp}
                             initial={{ opacity: 0, scale: 0.95 }}
@@ -90,7 +90,7 @@ export function Layout({ children, activeApp, setActiveApp }: LayoutProps) {
                 </main>
 
                 {/* Mobile Bottom Navigation */}
-                <nav className="md:hidden h-16 shrink-0 border-t-2 border-[var(--term-color)] flex justify-between items-end px-2 pb-2 bg-black z-30 relative">
+                <nav className="lg:hidden h-16 shrink-0 border-t-2 border-[var(--term-color)] flex justify-between items-end px-2 pb-2 bg-black z-30 relative">
                     {APPS.map((app) => (
                         <button
                             key={app.id}

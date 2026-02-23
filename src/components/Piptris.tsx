@@ -240,7 +240,7 @@ export function Piptris() {
     }, [player, level]);
 
     return (
-        <div className="h-full flex flex-col md:flex-row items-center justify-center gap-8 font-mono outline-none" tabIndex={0} data-testid="piptris-game">
+        <div className="h-full flex flex-col lg:flex-row items-center justify-center gap-8 font-mono outline-none" tabIndex={0} data-testid="piptris-game">
             <div className="border-chunky p-4 bg-black/80">
                 <div
                     style={{

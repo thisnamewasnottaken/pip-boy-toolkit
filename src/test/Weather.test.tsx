@@ -7,6 +7,8 @@ vi.mock('lucide-react', () => ({
     Thermometer: () => <span data-testid="icon-thermometer">🌡</span>,
     MapPinOff: () => <span data-testid="icon-map-pin-off">📍</span>,
     MapPin: () => <span data-testid="icon-map-pin">📌</span>,
+    ChevronLeft: () => <span data-testid="icon-chevron-left">◀</span>,
+    ChevronRight: () => <span data-testid="icon-chevron-right">▶</span>,
 }));
 
 // Mock recharts to avoid canvas/resize issues in jsdom
@@ -103,13 +105,13 @@ describe('Weather', () => {
         let capturedSignal: AbortSignal | undefined;
         (fetch as ReturnType<typeof vi.fn>).mockImplementation((_url: string, options?: RequestInit) => {
             capturedSignal = options?.signal ?? undefined;
-            return new Promise(() => {}); // never resolves
+            return new Promise(() => { }); // never resolves
         });
 
         const { unmount } = render(<Weather />);
 
         // Give effect time to run
-        await act(async () => {});
+        await act(async () => { });
 
         expect(capturedSignal).toBeDefined();
         expect(capturedSignal!.aborted).toBe(false);
@@ -125,6 +127,62 @@ describe('Weather', () => {
         render(<Weather />);
         await waitFor(() => {
             expect(screen.queryByTestId('weather-loading')).not.toBeInTheDocument();
+        });
+    });
+
+    describe('element visibility', () => {
+        it('renders temperature data in the dashboard', async () => {
+            render(<Weather />);
+            await waitFor(() => {
+                expect(screen.getByTestId('weather-dashboard')).toBeInTheDocument();
+            });
+            // Desktop testid for temp
+            expect(screen.getByTestId('weather-temp')).toBeInTheDocument();
+        });
+
+        it('renders precipitation data in the dashboard', async () => {
+            render(<Weather />);
+            await waitFor(() => {
+                expect(screen.getByTestId('weather-dashboard')).toBeInTheDocument();
+            });
+            expect(screen.getByTestId('weather-rain')).toBeInTheDocument();
+        });
+
+        it('renders UV data in the dashboard', async () => {
+            render(<Weather />);
+            await waitFor(() => {
+                expect(screen.getByTestId('weather-dashboard')).toBeInTheDocument();
+            });
+            expect(screen.getByTestId('weather-uv')).toBeInTheDocument();
+        });
+
+        it('renders the forecast chart', async () => {
+            render(<Weather />);
+            await waitFor(() => {
+                expect(screen.getByTestId('weather-dashboard')).toBeInTheDocument();
+            });
+            // Chart should be present in at least one layout
+            const charts = screen.getAllByTestId('line-chart');
+            expect(charts.length).toBeGreaterThanOrEqual(1);
+        });
+
+        it('renders the thermometer icon', async () => {
+            render(<Weather />);
+            await waitFor(() => {
+                expect(screen.getByTestId('weather-dashboard')).toBeInTheDocument();
+            });
+            const icons = screen.getAllByTestId('icon-thermometer');
+            expect(icons.length).toBeGreaterThanOrEqual(1);
+        });
+
+        it('renders system status information with location data', async () => {
+            render(<Weather />);
+            await waitFor(() => {
+                expect(screen.getByTestId('weather-dashboard')).toBeInTheDocument();
+            });
+            // Should always show OPEN-METEO as data source
+            const meteoText = screen.getAllByText('OPEN-METEO');
+            expect(meteoText.length).toBeGreaterThanOrEqual(1);
         });
     });
 });

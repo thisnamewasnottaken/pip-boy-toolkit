@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { Thermometer, MapPinOff, MapPin } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
+import { Thermometer, MapPinOff, MapPin, ChevronRight, ChevronLeft } from 'lucide-react';
 import {
     LineChart,
     Line,
@@ -30,6 +30,8 @@ export function Weather() {
     const [location, setLocation] = useState(DEFAULT_LOCATION);
     const [locationStatus, setLocationStatus] = useState<LocationStatus>('detecting');
     const [locationError, setLocationError] = useState<string | null>(null);
+    const [activePanel, setActivePanel] = useState(0);
+    const scrollRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         const controller = new AbortController();
@@ -127,6 +129,25 @@ export function Weather() {
         };
     }, []);
 
+    // Track which panel is active via scroll position (landscape swipe)
+    useEffect(() => {
+        const el = scrollRef.current;
+        if (!el) return;
+        const handleScroll = () => {
+            const scrollLeft = el.scrollLeft;
+            const width = el.clientWidth;
+            setActivePanel(scrollLeft > width * 0.4 ? 1 : 0);
+        };
+        el.addEventListener('scroll', handleScroll, { passive: true });
+        return () => el.removeEventListener('scroll', handleScroll);
+    }, [loading]);
+
+    const scrollToPanel = (panel: number) => {
+        const el = scrollRef.current;
+        if (!el) return;
+        el.scrollTo({ left: panel * el.clientWidth, behavior: 'smooth' });
+    };
+
     if (loading) {
         return (
             <div className="h-full flex flex-col items-center justify-center font-mono text-xl animate-pulse" data-testid="weather-loading">
@@ -137,30 +158,200 @@ export function Weather() {
         );
     }
 
-    return (
-        <div className="h-full flex flex-col gap-6" data-testid="weather-dashboard">
-            {/* Location Fallback Warning */}
-            {locationStatus !== 'detected' && locationStatus !== 'detecting' && (
-                <div
-                    className="border-2 border-amber-400 bg-amber-400/10 p-4 flex items-start gap-3"
-                    data-testid="weather-location-warning"
-                >
-                    <MapPinOff size={24} className="text-amber-400 shrink-0 mt-0.5" />
-                    <div>
-                        <p className="font-bold uppercase tracking-widest text-amber-400">
-                            ⚠ GEOLOCATION FAILED — USING DEFAULT LOCATION
-                        </p>
-                        <p className="text-sm opacity-80 mt-1">
-                            REASON: {locationError ?? 'UNKNOWN'} • DEFAULTED TO: {DEFAULT_LOCATION_NAME} ({DEFAULT_LOCATION.lat}°N, {DEFAULT_LOCATION.lon}°E)
-                        </p>
-                        <p className="text-xs opacity-60 mt-1">
-                            ALLOW LOCATION ACCESS IN YOUR BROWSER TO USE YOUR LOCAL WEATHER DATA
-                        </p>
-                    </div>
-                </div>
-            )}
+    // ── Shared sub-components ──────────────────────────────────
 
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+    const locationWarningDesktop = locationStatus !== 'detected' && locationStatus !== 'detecting' && (
+        <div
+            className="border-2 border-amber-400 bg-amber-400/10 p-4 flex items-start gap-3"
+            data-testid="weather-location-warning"
+        >
+            <MapPinOff size={24} className="text-amber-400 shrink-0 mt-0.5" />
+            <div>
+                <p className="font-bold uppercase tracking-widest text-amber-400">
+                    ⚠ GEOLOCATION FAILED — USING DEFAULT LOCATION
+                </p>
+                <p className="text-sm opacity-80 mt-1">
+                    REASON: {locationError ?? 'UNKNOWN'} • DEFAULTED TO: {DEFAULT_LOCATION_NAME} ({DEFAULT_LOCATION.lat}°N, {DEFAULT_LOCATION.lon}°E)
+                </p>
+                <p className="text-xs opacity-60 mt-1">
+                    ALLOW LOCATION ACCESS IN YOUR BROWSER TO USE YOUR LOCAL WEATHER DATA
+                </p>
+            </div>
+        </div>
+    );
+
+    const locationWarningMobile = locationStatus !== 'detected' && locationStatus !== 'detecting' && (
+        <div className="border border-amber-400 bg-amber-400/10 px-3 py-1 flex items-center gap-2 text-xs shrink-0">
+            <MapPinOff size={12} className="text-amber-400 shrink-0" />
+            <span className="font-bold uppercase tracking-wider text-amber-400 truncate">
+                ⚠ GEO FAILED — DEFAULT: {DEFAULT_LOCATION_NAME}
+            </span>
+        </div>
+    );
+
+    // Compact stat cards used by both portrait and landscape mobile
+    const mobileMetrics = (
+        <>
+            {/* Primary Stat: Temperature */}
+            <div className="border-chunky-thin p-2 flex items-center gap-3 bg-black/50 shrink-0">
+                <Thermometer size={24} className="shrink-0" />
+                <span className="text-2xl font-bold crt-glow flex-1">
+                    {currentTemp !== null ? Math.round(currentTemp) : '--'}°C
+                </span>
+                <span className="text-[10px] uppercase tracking-widest opacity-70">
+                    {currentRain !== null && currentRain > 0 ? 'PRECIP' : 'CLEAR'}
+                </span>
+            </div>
+
+            {/* Secondary Stats Row */}
+            <div className="grid grid-cols-2 gap-1.5 shrink-0">
+                <div className="border-chunky-thin p-2 bg-black/50 flex items-center justify-between">
+                    <span className="text-[10px] uppercase tracking-widest opacity-60">PRECIP</span>
+                    <span className="text-lg font-bold crt-glow">
+                        {currentRain !== null ? currentRain.toFixed(1) : '--'}
+                        <span className="text-[10px] ml-0.5 opacity-70">MM</span>
+                    </span>
+                </div>
+                <div className="border-chunky-thin p-2 bg-black/50 flex items-center justify-between">
+                    <span className="text-[10px] uppercase tracking-widest opacity-60">UV</span>
+                    <span className={`text-lg font-bold crt-glow ${currentUV !== null && currentUV > 5 ? 'text-red-500' : ''}`}>
+                        {currentUV !== null ? currentUV.toFixed(1) : '--'}
+                        <span className="text-[10px] ml-0.5 opacity-70">IDX</span>
+                    </span>
+                </div>
+            </div>
+
+            {/* System Status — single compact row */}
+            <div className="border-chunky-thin px-2 py-1.5 bg-black/50 flex items-center gap-3 text-[10px] shrink-0 flex-wrap">
+                <span className="flex items-center gap-1 opacity-70">
+                    {locationStatus === 'detected'
+                        ? <MapPin size={10} className="text-green-400" />
+                        : <MapPinOff size={10} className="text-amber-400" />
+                    }
+                    {locationStatus === 'detected'
+                        ? <>{location.lat.toFixed(2)}°N, {location.lon.toFixed(2)}°E</>
+                        : <span className="text-amber-400">{DEFAULT_LOCATION_NAME}</span>
+                    }
+                </span>
+                <span className="opacity-30">|</span>
+                <span className="opacity-70">SRC: {locationStatus === 'detected' ? 'GPS' : 'DEFAULT'}</span>
+                <span className="opacity-30">|</span>
+                <span className="opacity-70">OPEN-METEO</span>
+                <span className="opacity-30">|</span>
+                <span className="opacity-70">SYNCED</span>
+            </div>
+        </>
+    );
+
+    const mobileChart = (
+        <div className="border-chunky-thin p-2 bg-black/50 flex-1 flex flex-col min-h-0">
+            <h3 className="text-xs font-bold uppercase tracking-widest mb-1 opacity-80 shrink-0">24-HR FORECAST</h3>
+            <div className="flex-1 w-full min-h-0">
+                <ResponsiveContainer width="100%" height="100%">
+                    <LineChart data={data} margin={{ top: 5, right: 10, bottom: 5, left: -15 }}>
+                        <CartesianGrid strokeDasharray="3 3" stroke="var(--term-color)" opacity={0.2} />
+                        <XAxis dataKey="time" stroke="var(--term-color)" tick={{ fill: 'var(--term-color)', fontFamily: 'var(--font-mono)', fontSize: 9 }} interval={3} />
+                        <YAxis yAxisId="left" stroke="var(--term-color)" tick={{ fill: 'var(--term-color)', fontFamily: 'var(--font-mono)', fontSize: 9 }} width={25} />
+                        <YAxis yAxisId="right" orientation="right" stroke="#60a5fa" tick={{ fill: '#60a5fa', fontFamily: 'var(--font-mono)', fontSize: 9 }} width={25} />
+                        <Tooltip
+                            contentStyle={{ backgroundColor: 'var(--term-bg)', borderColor: 'var(--term-color)', color: 'var(--term-color)', fontFamily: 'var(--font-mono)', fontSize: 11 }}
+                            itemStyle={{ color: 'var(--term-color)' }}
+                        />
+                        <Line yAxisId="left" type="monotone" dataKey="temp" name="Temp (°C)" stroke="var(--term-color)" strokeWidth={2} dot={false} />
+                        <Line yAxisId="right" type="monotone" dataKey="rain" name="Rain (mm)" stroke="#60a5fa" strokeWidth={2} strokeDasharray="5 5" dot={false} />
+                    </LineChart>
+                </ResponsiveContainer>
+            </div>
+            <div className="flex justify-center gap-4 mt-1 shrink-0">
+                <div className="flex items-center gap-1">
+                    <div className="w-3 h-0.5 bg-[var(--term-color)]"></div>
+                    <span className="text-[10px] uppercase tracking-widest">TEMP</span>
+                </div>
+                <div className="flex items-center gap-1">
+                    <div className="w-3 h-0.5 border-t border-dashed border-[#60a5fa]"></div>
+                    <span className="text-[10px] uppercase tracking-widest text-[#60a5fa]">RAIN</span>
+                </div>
+            </div>
+        </div>
+    );
+
+    // ─────────────────────────────────────────────────────────
+    // MOBILE PORTRAIT: Stats stacked vertically with chart below
+    // ─────────────────────────────────────────────────────────
+    const mobilePortraitLayout = (
+        <div className="h-full flex flex-col gap-1.5 overflow-y-auto scrollbar-hide">
+            {locationWarningMobile}
+            {mobileMetrics}
+            {/* Chart fills remaining space, min-height ensures it's visible */}
+            <div className="flex flex-col min-h-[200px] flex-1">
+                {mobileChart}
+            </div>
+        </div>
+    );
+
+    // ─────────────────────────────────────────────────────────
+    // MOBILE LANDSCAPE: Swipeable panels — metrics | chart
+    // ─────────────────────────────────────────────────────────
+    const mobileLandscapeLayout = (
+        <div className="h-full flex flex-col">
+            {locationWarningMobile}
+
+            {/* Swipeable Panel Container — no scrollbars */}
+            <div
+                ref={scrollRef}
+                className="flex-1 flex overflow-x-auto overflow-y-hidden snap-x snap-mandatory scrollbar-hide min-h-0"
+            >
+                {/* PANEL 1: Metrics */}
+                <div className="w-full shrink-0 snap-center flex flex-col gap-1.5 p-1 overflow-hidden">
+                    {mobileMetrics}
+                </div>
+
+                {/* PANEL 2: Chart */}
+                <div className="w-full shrink-0 snap-center flex flex-col p-1 min-h-0">
+                    {mobileChart}
+                </div>
+            </div>
+
+            {/* Swipe Indicator Dots */}
+            <div className="flex items-center justify-center gap-3 py-1 shrink-0">
+                <button
+                    onClick={() => scrollToPanel(0)}
+                    className={`transition-opacity ${activePanel === 0 ? 'opacity-100' : 'opacity-40'}`}
+                    aria-label="View metrics"
+                >
+                    <ChevronLeft size={12} />
+                </button>
+                <div className="flex gap-1.5">
+                    <button
+                        onClick={() => scrollToPanel(0)}
+                        className={`w-1.5 h-1.5 rounded-full transition-all ${activePanel === 0 ? 'bg-[var(--term-color)] shadow-[0_0_4px_var(--term-color)]' : 'bg-[var(--term-color)]/30'}`}
+                        aria-label="Metrics panel"
+                    />
+                    <button
+                        onClick={() => scrollToPanel(1)}
+                        className={`w-1.5 h-1.5 rounded-full transition-all ${activePanel === 1 ? 'bg-[var(--term-color)] shadow-[0_0_4px_var(--term-color)]' : 'bg-[var(--term-color)]/30'}`}
+                        aria-label="Chart panel"
+                    />
+                </div>
+                <button
+                    onClick={() => scrollToPanel(1)}
+                    className={`transition-opacity ${activePanel === 1 ? 'opacity-100' : 'opacity-40'}`}
+                    aria-label="View chart"
+                >
+                    <ChevronRight size={12} />
+                </button>
+            </div>
+        </div>
+    );
+
+    // ─────────────────────────────────────────────────────────
+    // DESKTOP LAYOUT: Original full grid
+    // ─────────────────────────────────────────────────────────
+    const desktopLayout = (
+        <div className="h-full flex flex-col gap-6">
+            {locationWarningDesktop}
+
+            <div className="grid grid-cols-4 gap-6">
                 {/* Current Conditions */}
                 <div className="border-chunky-thin p-6 flex flex-col items-center justify-center bg-black/50">
                     <h3 className="text-xl font-bold uppercase tracking-widest mb-4 opacity-80">CURRENT TEMP</h3>
@@ -272,6 +463,20 @@ export function Weather() {
                     </div>
                 </div>
             </div>
+        </div>
+    );
+
+    return (
+        <div data-testid="weather-dashboard" className="h-full">
+            {/* Mobile layouts — hidden on desktop (lg+) */}
+            <div className="lg:hidden h-full">
+                {/* Portrait: stats + chart stacked vertically */}
+                <div className="hidden portrait:block h-full">{mobilePortraitLayout}</div>
+                {/* Landscape: swipeable panels */}
+                <div className="hidden landscape:block h-full">{mobileLandscapeLayout}</div>
+            </div>
+            {/* Desktop: full grid */}
+            <div className="hidden lg:block h-full">{desktopLayout}</div>
         </div>
     );
 }
