@@ -328,7 +328,42 @@ npm run test:coverage
 # Open coverage/index.html in a browser for a visual line-by-line report
 ```
 
-Do not submit PRs that regress statement or branch coverage on already-covered components (`Hacking`, `Settings`, `Timer`).
+### Coverage Thresholds
+
+All new code and legacy code must meet the following coverage thresholds:
+
+| Metric     | Threshold |
+|------------|-----------|
+| Statements | 95%       |
+| Branches   | 95%       |
+| Functions  | 95%       |
+| Lines      | 95%       |
+
+These thresholds are enforced in `vite.config.ts` and will cause `npm run test:coverage` to fail if not met. The CI workflow on pull requests also enforces these thresholds and posts a coverage summary report as a PR comment.
+
+### Coverage Exclusions
+
+The following files are **excluded** from coverage measurement:
+
+| Excluded path       | Reason                                                       |
+|---------------------|--------------------------------------------------------------|
+| `src/main.tsx`      | Entry-point bootstrapping — no testable logic                |
+| `src/vite-env.d.ts` | TypeScript ambient declaration — no runtime code             |
+| `src/test/**`       | Test files themselves — not production code                  |
+
+Python scripts under `.agents/` are tooling/admin utilities and are not measured by vitest. Only TypeScript production code in `src/` is included in coverage.
+
+### CI Coverage Enforcement
+
+Pull requests targeting `master` trigger the **CI** workflow (`.github/workflows/ci.yml`) which:
+
+1. Runs `npm run lint` (type check)
+2. Runs `npm run test:coverage` (tests with coverage thresholds)
+3. Posts a detailed coverage report as a PR comment via `davelosert/vitest-coverage-report-action`
+
+PRs that drop coverage below 95% on any metric will fail the CI check.
+
+Do not submit PRs that regress statement or branch coverage on already-covered components.
 
 ---
 
