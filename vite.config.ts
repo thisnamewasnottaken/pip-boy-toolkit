@@ -26,6 +26,18 @@ export default defineConfig({
             // 'text' → terminal table, 'json' → Codecov, 'json-summary' → PR comment action, 'html' → local browser report
             reporter: ['text', 'json', 'json-summary', 'html'],
             reportsDirectory: './coverage',
+            include: ['src/**/*.{ts,tsx}'],
+            exclude: [
+                'src/main.tsx',
+                'src/vite-env.d.ts',
+                'src/test/**',
+            ],
+            thresholds: {
+                statements: 95,
+                branches: 95,
+                functions: 95,
+                lines: 95,
+            },
         },
     },
 });

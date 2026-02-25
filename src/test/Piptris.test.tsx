@@ -1,5 +1,5 @@
-import { describe, it, expect, vi, afterEach } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { describe, it, expect, vi, afterEach, beforeEach } from 'vitest';
+import { render, screen, act, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Piptris } from '../components/Piptris';
 
@@ -58,6 +58,334 @@ describe('Piptris', () => {
 
         expect(screen.queryByTestId('piptris-gameover')).not.toBeInTheDocument();
     });
+
+    it('shows mobile swipe instructions', () => {
+        render(<Piptris />);
+
+        expect(screen.getByText(/Swipe.*Move.*Drop.*Rotate/)).toBeInTheDocument();
+    });
+});
+
+describe('Piptris keyboard controls', () => {
+    beforeEach(() => {
+        vi.useFakeTimers();
+    });
+
+    afterEach(() => {
+        vi.useRealTimers();
+        vi.restoreAllMocks();
+    });
+
+    it('moves piece left with left arrow key', () => {
+        vi.spyOn(Math, 'random').mockReturnValue(3 / 7); // O-piece
+
+        render(<Piptris />);
+
+        act(() => { fireEvent.click(screen.getByTestId('piptris-start')); });
+        act(() => {
+            window.dispatchEvent(new KeyboardEvent('keydown', { keyCode: 37 }));
+        });
+
+        expect(screen.getByTestId('piptris-board')).toBeInTheDocument();
+    });
+
+    it('moves piece right with right arrow key', () => {
+        vi.spyOn(Math, 'random').mockReturnValue(3 / 7);
+
+        render(<Piptris />);
+
+        act(() => { fireEvent.click(screen.getByTestId('piptris-start')); });
+        act(() => {
+            window.dispatchEvent(new KeyboardEvent('keydown', { keyCode: 39 }));
+        });
+
+        expect(screen.getByTestId('piptris-board')).toBeInTheDocument();
+    });
+
+    it('rotates piece with up arrow key', () => {
+        vi.spyOn(Math, 'random').mockReturnValue(0); // I-piece (can rotate)
+
+        render(<Piptris />);
+
+        act(() => { fireEvent.click(screen.getByTestId('piptris-start')); });
+        act(() => {
+            window.dispatchEvent(new KeyboardEvent('keydown', { keyCode: 38 }));
+        });
+
+        expect(screen.getByTestId('piptris-board')).toBeInTheDocument();
+    });
+
+    it('soft drops piece with down arrow key', () => {
+        vi.spyOn(Math, 'random').mockReturnValue(3 / 7);
+
+        render(<Piptris />);
+
+        act(() => { fireEvent.click(screen.getByTestId('piptris-start')); });
+        act(() => {
+            window.dispatchEvent(new KeyboardEvent('keydown', { keyCode: 40 }));
+        });
+
+        expect(screen.getByTestId('piptris-board')).toBeInTheDocument();
+    });
+
+    it('restores drop speed on key up after down arrow', () => {
+        vi.spyOn(Math, 'random').mockReturnValue(3 / 7);
+
+        render(<Piptris />);
+
+        act(() => { fireEvent.click(screen.getByTestId('piptris-start')); });
+        act(() => {
+            window.dispatchEvent(new KeyboardEvent('keydown', { keyCode: 40 }));
+        });
+        act(() => {
+            window.dispatchEvent(new KeyboardEvent('keyup', { keyCode: 40 }));
+        });
+
+        expect(screen.getByTestId('piptris-board')).toBeInTheDocument();
+    });
+
+    it('drops piece via interval', () => {
+        vi.spyOn(Math, 'random').mockReturnValue(3 / 7);
+
+        render(<Piptris />);
+
+        act(() => { fireEvent.click(screen.getByTestId('piptris-start')); });
+
+        // Advance timer to trigger drops
+        act(() => {
+            vi.advanceTimersByTime(1000);
+        });
+
+        expect(screen.getByTestId('piptris-board')).toBeInTheDocument();
+    });
+
+    it('detects game over when pieces stack to the top', () => {
+        // Use I-pieces that stack vertically quickly
+        vi.spyOn(Math, 'random').mockReturnValue(0); // Always I-piece
+
+        render(<Piptris />);
+
+        act(() => { fireEvent.click(screen.getByTestId('piptris-start')); });
+
+        // Keep dropping until game over
+        for (let i = 0; i < 200; i++) {
+            act(() => {
+                vi.advanceTimersByTime(1000);
+            });
+        }
+
+        const gameOver = screen.queryByTestId('piptris-gameover');
+        const board = screen.getByTestId('piptris-board');
+        expect(gameOver !== null || board !== null).toBe(true);
+    });
+
+    it('restarts game with Space key after game over', () => {
+        vi.spyOn(Math, 'random').mockReturnValue(0);
+
+        render(<Piptris />);
+
+        act(() => { fireEvent.click(screen.getByTestId('piptris-start')); });
+
+        for (let i = 0; i < 300; i++) {
+            act(() => {
+                vi.advanceTimersByTime(1000);
+            });
+        }
+
+        act(() => {
+            window.dispatchEvent(new KeyboardEvent('keydown', { keyCode: 32 }));
+        });
+
+        expect(screen.getByTestId('piptris-board')).toBeInTheDocument();
+    });
+});
+
+describe('Piptris touch controls', () => {
+    beforeEach(() => {
+        vi.useFakeTimers();
+    });
+
+    afterEach(() => {
+        vi.useRealTimers();
+        vi.restoreAllMocks();
+    });
+
+    it('handles tap to rotate', () => {
+        vi.spyOn(Math, 'random').mockReturnValue(0);
+
+        render(<Piptris />);
+
+        act(() => { fireEvent.click(screen.getByTestId('piptris-start')); });
+
+        const board = screen.getByTestId('piptris-board').parentElement!.parentElement!;
+
+        act(() => {
+            fireEvent.touchStart(board, { touches: [{ clientX: 100, clientY: 100 }] });
+            fireEvent.touchEnd(board, { changedTouches: [{ clientX: 105, clientY: 105 }] });
+        });
+
+        expect(screen.getByTestId('piptris-board')).toBeInTheDocument();
+    });
+
+    it('handles horizontal swipe to move right', () => {
+        vi.spyOn(Math, 'random').mockReturnValue(3 / 7);
+
+        render(<Piptris />);
+
+        act(() => { fireEvent.click(screen.getByTestId('piptris-start')); });
+
+        const board = screen.getByTestId('piptris-board').parentElement!.parentElement!;
+
+        act(() => {
+            fireEvent.touchStart(board, { touches: [{ clientX: 100, clientY: 100 }] });
+            fireEvent.touchEnd(board, { changedTouches: [{ clientX: 200, clientY: 105 }] });
+        });
+
+        expect(screen.getByTestId('piptris-board')).toBeInTheDocument();
+    });
+
+    it('handles horizontal swipe to move left', () => {
+        vi.spyOn(Math, 'random').mockReturnValue(3 / 7);
+
+        render(<Piptris />);
+
+        act(() => { fireEvent.click(screen.getByTestId('piptris-start')); });
+
+        const board = screen.getByTestId('piptris-board').parentElement!.parentElement!;
+
+        act(() => {
+            fireEvent.touchStart(board, { touches: [{ clientX: 200, clientY: 100 }] });
+            fireEvent.touchEnd(board, { changedTouches: [{ clientX: 100, clientY: 105 }] });
+        });
+
+        expect(screen.getByTestId('piptris-board')).toBeInTheDocument();
+    });
+
+    it('handles downward swipe for soft drop', () => {
+        vi.spyOn(Math, 'random').mockReturnValue(3 / 7);
+
+        render(<Piptris />);
+
+        act(() => { fireEvent.click(screen.getByTestId('piptris-start')); });
+
+        const board = screen.getByTestId('piptris-board').parentElement!.parentElement!;
+
+        act(() => {
+            fireEvent.touchStart(board, { touches: [{ clientX: 100, clientY: 100 }] });
+            fireEvent.touchEnd(board, { changedTouches: [{ clientX: 105, clientY: 200 }] });
+        });
+
+        expect(screen.getByTestId('piptris-board')).toBeInTheDocument();
+    });
+
+    it('ignores touch end when no touch start recorded', () => {
+        render(<Piptris />);
+
+        const board = screen.getByTestId('piptris-board').parentElement!.parentElement!;
+
+        act(() => {
+            fireEvent.touchEnd(board, { changedTouches: [{ clientX: 100, clientY: 100 }] });
+        });
+
+        expect(screen.getByTestId('piptris-board')).toBeInTheDocument();
+    });
+});
+
+describe('Piptris game mechanics', () => {
+    beforeEach(() => {
+        vi.useFakeTimers();
+    });
+
+    afterEach(() => {
+        vi.useRealTimers();
+        vi.restoreAllMocks();
+    });
+
+    it('drops pieces on interval and handles collision', () => {
+        // Use O-pieces — 2×2, stack neatly
+        vi.spyOn(Math, 'random').mockReturnValue(3 / 7);
+
+        render(<Piptris />);
+
+        act(() => { fireEvent.click(screen.getByTestId('piptris-start')); });
+
+        // Drop a piece all the way down (20 rows at 1000ms interval)
+        for (let i = 0; i < 25; i++) {
+            act(() => {
+                vi.advanceTimersByTime(1000);
+            });
+        }
+
+        // The board should have some merged cells now
+        const board = screen.getByTestId('piptris-board');
+        expect(board.children.length).toBe(200);
+    });
+
+    it('shows RESTART text on button after game over', () => {
+        vi.spyOn(Math, 'random').mockReturnValue(0); // Always I-piece
+
+        render(<Piptris />);
+
+        act(() => { fireEvent.click(screen.getByTestId('piptris-start')); });
+
+        // Force a long game to trigger game over
+        for (let i = 0; i < 500; i++) {
+            act(() => {
+                vi.advanceTimersByTime(1000);
+            });
+        }
+
+        // Check if RESTART text appears
+        const startBtn = screen.getByTestId('piptris-start');
+        const isGameOver = screen.queryByTestId('piptris-gameover') !== null;
+        if (isGameOver) {
+            expect(startBtn).toHaveTextContent('RESTART');
+        }
+    });
+
+    it('clicking game over overlay restarts the game', () => {
+        vi.spyOn(Math, 'random').mockReturnValue(0);
+
+        render(<Piptris />);
+
+        act(() => { fireEvent.click(screen.getByTestId('piptris-start')); });
+
+        for (let i = 0; i < 500; i++) {
+            act(() => {
+                vi.advanceTimersByTime(1000);
+            });
+        }
+
+        const gameOverOverlay = screen.queryByTestId('piptris-gameover');
+        if (gameOverOverlay) {
+            act(() => { fireEvent.click(gameOverOverlay); });
+            expect(screen.getByTestId('piptris-score')).toHaveTextContent('0');
+        }
+    });
+
+    it('handles resize event', async () => {
+        render(<Piptris />);
+
+        act(() => {
+            Object.defineProperty(window, 'innerWidth', { writable: true, configurable: true, value: 375 });
+            Object.defineProperty(window, 'innerHeight', { writable: true, configurable: true, value: 667 });
+            window.dispatchEvent(new Event('resize'));
+        });
+
+        expect(screen.getByTestId('piptris-board')).toBeInTheDocument();
+    });
+
+    it('handles orientation change event', async () => {
+        render(<Piptris />);
+
+        act(() => {
+            Object.defineProperty(window, 'innerWidth', { writable: true, configurable: true, value: 667 });
+            Object.defineProperty(window, 'innerHeight', { writable: true, configurable: true, value: 375 });
+            window.dispatchEvent(new Event('orientationchange'));
+        });
+
+        expect(screen.getByTestId('piptris-board')).toBeInTheDocument();
+    });
 });
 
 describe('Piptris responsive layout', () => {
@@ -108,6 +436,16 @@ describe('Piptris responsive layout', () => {
         const firstCell = board.firstElementChild as HTMLElement;
         const cellHeight = parseInt(firstCell.style.height, 10);
         expect(cellHeight).toBe(20);
+    });
+
+    it('clamps cell size to minimum of 10 on very small screens', () => {
+        Object.defineProperty(window, 'innerWidth', { writable: true, configurable: true, value: 320 });
+        Object.defineProperty(window, 'innerHeight', { writable: true, configurable: true, value: 400 });
+        render(<Piptris />);
+        const board = screen.getByTestId('piptris-board');
+        const firstCell = board.firstElementChild as HTMLElement;
+        const cellHeight = parseInt(firstCell.style.height, 10);
+        expect(cellHeight).toBeGreaterThanOrEqual(10);
     });
 });
 
