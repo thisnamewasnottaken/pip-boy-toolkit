@@ -16,6 +16,7 @@ export function Timer({ debugMode = false }: TimerProps) {
     const [showAnimation, setShowAnimation] = useState(false);
     const audioRef = useRef<HTMLAudioElement | null>(null);
     const volumeIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+    const endTimeRef = useRef<number | null>(null);
 
     useEffect(() => {
         audioRef.current = new Audio('https://actions.google.com/sounds/v1/alarms/beep_short.ogg');
@@ -45,6 +46,7 @@ export function Timer({ debugMode = false }: TimerProps) {
             }, 1000);
         } else if (timeLeft === 0 && isActive) {
             setIsActive(false);
+            endTimeRef.current = null;
             setShowAnimation(true);
 
             if (audioRef.current) {
@@ -57,13 +59,42 @@ export function Timer({ debugMode = false }: TimerProps) {
                     }
                 }, 10000);
             }
+
+            if ('Notification' in window && Notification.permission === 'granted') {
+                new Notification('Pip-Boy Timer', {
+                    body: mode === 'work' ? 'CYCLE COMPLETE' : 'BREAK OVER',
+                    icon: '/pip-boy-toolkit/favicon.ico',
+                });
+            }
         }
         return () => clearInterval(interval);
-    }, [isActive, timeLeft]);
+    }, [isActive, timeLeft, mode]);
 
-    const toggleTimer = () => setIsActive(!isActive);
+    useEffect(() => {
+        const handleVisibilityChange = () => {
+            if (document.visibilityState === 'visible' && endTimeRef.current !== null) {
+                const remaining = Math.round((endTimeRef.current - Date.now()) / 1000);
+                setTimeLeft(Math.max(0, remaining));
+            }
+        };
+        document.addEventListener('visibilitychange', handleVisibilityChange);
+        return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
+    }, []);
+
+    const toggleTimer = () => {
+        if (!isActive) {
+            endTimeRef.current = Date.now() + timeLeft * 1000;
+            if ('Notification' in window && Notification.permission === 'default') {
+                Notification.requestPermission();
+            }
+        } else {
+            endTimeRef.current = null;
+        }
+        setIsActive(!isActive);
+    };
     const resetTimer = () => {
         setIsActive(false);
+        endTimeRef.current = null;
         setTimeLeft(mode === 'work' ? getWorkTime() : getBreakTime());
     };
 
@@ -160,14 +191,14 @@ export function Timer({ debugMode = false }: TimerProps) {
                     {/* Mode selectors */}
                     <div className="flex gap-2 lg:gap-4">
                         <button
-                            onClick={() => { setMode('work'); setTimeLeft(getWorkTime()); setIsActive(false); }}
+                            onClick={() => { setMode('work'); setTimeLeft(getWorkTime()); setIsActive(false); endTimeRef.current = null; }}
                             className={`px-2 lg:px-6 py-1.5 lg:py-2 border-b-2 uppercase font-bold text-[10px] lg:text-base ${mode === 'work' ? 'border-[var(--term-color)]' : 'border-transparent opacity-50'}`}
                             data-testid="timer-work-mode"
                         >
                             POMODORO (25M)
                         </button>
                         <button
-                            onClick={() => { setMode('break'); setTimeLeft(getBreakTime()); setIsActive(false); }}
+                            onClick={() => { setMode('break'); setTimeLeft(getBreakTime()); setIsActive(false); endTimeRef.current = null; }}
                             className={`px-2 lg:px-6 py-1.5 lg:py-2 border-b-2 uppercase font-bold text-[10px] lg:text-base ${mode === 'break' ? 'border-[var(--term-color)]' : 'border-transparent opacity-50'}`}
                             data-testid="timer-break-mode"
                         >
