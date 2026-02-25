@@ -1,22 +1,96 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <radialGradient id="screenGlow" cx="55%" cy="38%" r="60%">
+      <stop offset="0%" stop-color="#4ade80" stop-opacity="0.22"/>
+      <stop offset="100%" stop-color="#050505" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="scanlines" x="0" y="0" width="64" height="2" patternUnits="userSpaceOnUse">
+      <rect width="64" height="1" fill="#000000" opacity="0.28"/>
+    </pattern>
+  </defs>
+
   <!-- Background -->
-  <rect width="32" height="32" rx="4" fill="#050505"/>
-  <!-- Pip-Boy device body -->
-  <rect x="6" y="3" width="20" height="26" rx="3" fill="none" stroke="#4ade80" stroke-width="1.5"/>
-  <!-- Screen bezel -->
-  <rect x="8" y="6" width="16" height="11" rx="1.5" fill="#050505" stroke="#4ade80" stroke-width="1"/>
-  <!-- Screen glow fill -->
-  <rect x="9" y="7" width="14" height="9" rx="1" fill="#4ade80" opacity="0.12"/>
-  <!-- Cursor prompt -->
-  <text x="10" y="14" font-family="monospace" font-size="6.5" fill="#4ade80" font-weight="bold">&gt;_</text>
-  <!-- Divider line -->
-  <line x1="8" y1="20" x2="24" y2="20" stroke="#4ade80" stroke-width="0.75" opacity="0.6"/>
-  <!-- Left dial -->
-  <circle cx="12" cy="24" r="2.5" fill="none" stroke="#4ade80" stroke-width="1"/>
-  <circle cx="12" cy="24" r="0.75" fill="#4ade80"/>
-  <!-- Right dial -->
-  <circle cx="20" cy="24" r="2.5" fill="none" stroke="#4ade80" stroke-width="1"/>
-  <circle cx="20" cy="24" r="0.75" fill="#4ade80"/>
-  <!-- Center indicator -->
-  <rect x="15" y="22" width="2" height="4" rx="0.5" fill="#4ade80" opacity="0.5"/>
+  <rect width="64" height="64" rx="10" fill="#050505"/>
+  <!-- CRT screen -->
+  <rect x="5" y="5" width="54" height="54" rx="6" fill="#010a01"/>
+  <!-- CRT outer glow -->
+  <rect x="1.5" y="1.5" width="61" height="61" rx="10" fill="none" stroke="#4ade80" stroke-width="0.7" opacity="0.4"/>
+  <!-- CRT bezel -->
+  <rect x="3" y="3" width="58" height="58" rx="8" fill="none" stroke="#4ade80" stroke-width="2.5"/>
+
+  <!-- === VAULT BOY === -->
+
+  <!-- Arm/wrist -->
+  <rect x="7" y="39" width="10" height="8" rx="2" fill="#2a6040"/>
+  <!-- Fist -->
+  <rect x="6" y="30" width="14" height="11" rx="3" fill="#4ade80"/>
+  <!-- Thumb (chunky, curved up) -->
+  <path d="M8 30 Q7 23 10 20 Q13 18 14.5 21 Q15.5 24 13.5 30 Z" fill="#4ade80"/>
+  <!-- Thumb tip crease -->
+  <path d="M9 22 Q11 20 14 22" fill="none" stroke="#050505" stroke-width="0.9" opacity="0.5"/>
+  <line x1="8.5" y1="29" x2="14" y2="28" stroke="#050505" stroke-width="0.8" opacity="0.4"/>
+  <!-- Knuckle grooves -->
+  <line x1="10" y1="31.5" x2="10" y2="40" stroke="#050505" stroke-width="0.7" opacity="0.4"/>
+  <line x1="13.5" y1="31.5" x2="13.5" y2="40" stroke="#050505" stroke-width="0.7" opacity="0.4"/>
+  <line x1="17" y1="31.5" x2="17" y2="40" stroke="#050505" stroke-width="0.7" opacity="0.4"/>
+
+  <!-- Vault suit body -->
+  <path d="M20 64 Q24 51 31 47 L34 53 L38.5 47 L42 53 L46 47 Q52 51 57 64 Z" fill="#1a5c30"/>
+  <!-- Collar V -->
+  <path d="M31 47 L38.5 54 L46 47" fill="none" stroke="#4ade80" stroke-width="1.4" stroke-linejoin="round" opacity="0.9"/>
+  <!-- Gear badge -->
+  <circle cx="48" cy="58" r="3.8" fill="none" stroke="#4ade80" stroke-width="1.1"/>
+  <circle cx="48" cy="58" r="1.5" fill="#4ade80" opacity="0.75"/>
+  <rect x="47.3" y="53.4" width="1.4" height="1.8" rx="0.4" fill="#4ade80"/>
+  <rect x="47.3" y="60.8" width="1.4" height="1.8" rx="0.4" fill="#4ade80"/>
+  <rect x="53.2" y="57.3" width="1.8" height="1.4" rx="0.4" fill="#4ade80"/>
+  <rect x="43" y="57.3" width="1.8" height="1.4" rx="0.4" fill="#4ade80"/>
+
+  <!-- HEAD (face skin) -->
+  <ellipse cx="39" cy="31" rx="15.5" ry="17" fill="#4ade80"/>
+
+  <!-- HAIR — drawn as a distinct shape protruding above the head oval -->
+  <!-- Hair base mass -->
+  <path d="M24 23 Q24 10 37 9 Q48 9 53 18 Q52 13 47 11 Q41 8 35 9 Q27 10 25 18 Z" fill="#6bff9e"/>
+  <!-- Individual hair strands sticking up -->
+  <path d="M31 14 Q30 9 32 7 Q34 7 34 10 Q33 12 32 14 Z" fill="#6bff9e"/>
+  <path d="M35.5 11 Q35 7 37 6 Q39 6 39 9 Q38 11 37 12 Z" fill="#6bff9e"/>
+  <path d="M40 10 Q40 6 42 6 Q44 7 43 10 Q42 11 41 11 Z" fill="#6bff9e"/>
+  <path d="M44 11 Q45 8 47 9 Q48 11 47 13 Z" fill="#6bff9e"/>
+  <!-- Hair strand texture lines (dark) -->
+  <line x1="30" y1="22" x2="32" y2="10" stroke="#050505" stroke-width="0.9" opacity="0.5"/>
+  <line x1="33" y1="21" x2="35" y2="9" stroke="#050505" stroke-width="0.9" opacity="0.5"/>
+  <line x1="36" y1="20" x2="37.5" y2="8" stroke="#050505" stroke-width="0.9" opacity="0.5"/>
+  <line x1="39.5" y1="20" x2="40.5" y2="8" stroke="#050505" stroke-width="0.9" opacity="0.5"/>
+  <line x1="43" y1="20" x2="44" y2="10" stroke="#050505" stroke-width="0.9" opacity="0.5"/>
+  <line x1="46" y1="21" x2="47" y2="13" stroke="#050505" stroke-width="0.9" opacity="0.5"/>
+  <!-- Hair bottom edge (where hair meets face) - subtle dark line -->
+  <path d="M24 23 Q30 19 39 19 Q48 19 53 22" fill="none" stroke="#050505" stroke-width="1" opacity="0.3"/>
+
+  <!-- Ear -->
+  <ellipse cx="54.5" cy="31" rx="2.5" ry="4" fill="#3dba70"/>
+  <path d="M53 28.5 Q55.5 31 53 33.5" fill="none" stroke="#050505" stroke-width="1" opacity="0.5"/>
+
+  <!-- Winking eye (character's left) -->
+  <path d="M31.5 28.5 Q34.5 26 37.5 28.5" fill="none" stroke="#050505" stroke-width="2.2" stroke-linecap="round"/>
+  <line x1="31.5" y1="28.5" x2="30.5" y2="27.5" stroke="#050505" stroke-width="1.1" opacity="0.6"/>
+  <line x1="37.5" y1="28.5" x2="38.5" y2="27.5" stroke="#050505" stroke-width="1.1" opacity="0.6"/>
+
+  <!-- Open eye with brow -->
+  <path d="M41 24 Q44.5 22 48 24" fill="none" stroke="#050505" stroke-width="1.5" stroke-linecap="round" opacity="0.65"/>
+  <ellipse cx="44.5" cy="28" rx="4" ry="4" fill="#050505"/>
+  <circle cx="45.6" cy="26.8" r="1.2" fill="#4ade80" opacity="0.3"/>
+
+  <!-- Nose bump -->
+  <path d="M37.5 32 Q38.5 34.5 40 34.5 Q41 34.5 41.5 33" fill="none" stroke="#050505" stroke-width="1.2" stroke-linecap="round" opacity="0.65"/>
+
+  <!-- Grin -->
+  <path d="M30 38.5 Q39 46 48 38.5 L48 40 Q39 48.5 30 40 Z" fill="#050505"/>
+  <!-- Teeth -->
+  <path d="M32.5 38.5 Q39 44.5 45.5 38.5 L45.5 40 Q39 46 32.5 40 Z" fill="white" opacity="0.82"/>
+
+  <!-- CRT glow -->
+  <rect x="5" y="5" width="54" height="54" rx="6" fill="url(#screenGlow)"/>
+  <!-- Scanlines -->
+  <rect x="5" y="5" width="54" height="54" rx="6" fill="url(#scanlines)"/>
 </svg>
