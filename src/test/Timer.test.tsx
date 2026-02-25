@@ -108,6 +108,22 @@ describe('Timer', () => {
         expect(screen.getByTestId('timer-display')).toHaveTextContent('25:00');
     });
 
+    it('resets the timer when in break mode', () => {
+        render(<Timer debugMode={true} />);
+
+        // Switch to break mode
+        act(() => { fireEvent.click(screen.getByTestId('timer-break-mode')); });
+        expect(screen.getByTestId('timer-mode')).toHaveTextContent('BREAK CYCLE');
+
+        // Start and advance
+        act(() => { fireEvent.click(screen.getByTestId('timer-toggle')); });
+        act(() => { vi.advanceTimersByTime(1000); });
+
+        // Reset in break mode
+        act(() => { fireEvent.click(screen.getByTestId('timer-reset')); });
+        expect(screen.getByTestId('timer-display')).toHaveTextContent('00:03');
+    });
+
     it('switches between work and break modes', () => {
         render(<Timer />);
 
@@ -148,6 +164,29 @@ describe('Timer', () => {
         // Should now be in break mode
         expect(screen.getByTestId('timer-mode')).toHaveTextContent('BREAK CYCLE');
         expect(screen.getByTestId('timer-display')).toHaveTextContent('00:03');
+    });
+
+    it('dismisses alert after break and switches back to work mode', () => {
+        render(<Timer debugMode={true} />);
+
+        // Complete work cycle
+        act(() => { fireEvent.click(screen.getByTestId('timer-toggle')); });
+        act(() => { vi.advanceTimersByTime(5000); });
+        act(() => { fireEvent.click(screen.getByTestId('timer-alert')); });
+
+        // Now in break mode — start and complete break cycle
+        expect(screen.getByTestId('timer-mode')).toHaveTextContent('BREAK CYCLE');
+        act(() => { fireEvent.click(screen.getByTestId('timer-toggle')); });
+        act(() => { vi.advanceTimersByTime(3000); });
+
+        // Alert should appear for break completion
+        expect(screen.getByTestId('timer-alert')).toBeInTheDocument();
+        expect(screen.getByText('BREAK OVER')).toBeInTheDocument();
+
+        // Dismiss to switch back to work mode
+        act(() => { fireEvent.click(screen.getByTestId('timer-alert')); });
+        expect(screen.getByTestId('timer-mode')).toHaveTextContent('WORK CYCLE');
+        expect(screen.getByTestId('timer-display')).toHaveTextContent('00:05');
     });
 
     describe('element visibility', () => {
@@ -234,12 +273,55 @@ describe('Timer', () => {
             expect(Notification).toHaveBeenCalledWith('Pip-Boy Timer', expect.objectContaining({ body: 'CYCLE COMPLETE' }));
         });
 
+        it('sends BREAK OVER notification when break timer completes', () => {
+            Object.defineProperty(Notification, 'permission', { value: 'granted', configurable: true });
+            render(<Timer debugMode={true} />);
+
+            // Complete work cycle and dismiss
+            act(() => { fireEvent.click(screen.getByTestId('timer-toggle')); });
+            act(() => { vi.advanceTimersByTime(5000); });
+            act(() => { fireEvent.click(screen.getByTestId('timer-alert')); });
+
+            // Now in break mode - start and complete break
+            act(() => { fireEvent.click(screen.getByTestId('timer-toggle')); });
+            act(() => { vi.advanceTimersByTime(3000); });
+
+            expect(Notification).toHaveBeenCalledWith('Pip-Boy Timer', expect.objectContaining({ body: 'BREAK OVER' }));
+        });
+
         it('requests notification permission when timer starts', () => {
             render(<Timer />);
 
             act(() => { fireEvent.click(screen.getByTestId('timer-toggle')); });
 
             expect(Notification.requestPermission).toHaveBeenCalled();
+        });
+
+        it('ramps up audio volume over time after timer completes', () => {
+            const mockAudio = {
+                play: vi.fn().mockResolvedValue(undefined),
+                pause: vi.fn(),
+                loop: false,
+                volume: 1,
+                currentTime: 0,
+            };
+            vi.stubGlobal('Audio', vi.fn(() => mockAudio));
+            Object.defineProperty(Notification, 'permission', { value: 'granted', configurable: true });
+
+            render(<Timer debugMode={true} />);
+
+            // Start and complete the timer
+            act(() => { fireEvent.click(screen.getByTestId('timer-toggle')); });
+            act(() => { vi.advanceTimersByTime(5000); });
+
+            // After completion, volume is set to 0.1
+            expect(mockAudio.volume).toBe(0.1);
+
+            // Advance by 10 seconds to trigger volume ramp interval
+            act(() => { vi.advanceTimersByTime(10000); });
+
+            // Volume should have increased
+            expect(mockAudio.volume).toBeCloseTo(0.2, 1);
         });
     });
 });

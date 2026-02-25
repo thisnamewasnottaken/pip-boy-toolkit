@@ -204,15 +204,20 @@ npm run test:coverage
 
 ### Test Coverage
 
-Live coverage is tracked by [Codecov](https://codecov.io/gh/thisnamewasnottaken/pip-boy-toolkit) and updated on every push to `master`. Click the badge at the top of this file for a full breakdown.
+Coverage is enforced at **95%** for statements, branches, functions, and lines. The CI workflow on pull requests will fail if coverage drops below this threshold, and a detailed report is posted as a PR comment.
+
+Live coverage is tracked on every push to `master` and published to GitHub Pages. Click the badge at the top of this file for a full breakdown.
 
 | Component | Tests | What's covered |
 |-----------|-------|----------------|
-| Timer | 8 | Start/pause, reset, mode switching, countdown, alerts |
+| App | 6 | Default render, theme, app switching |
+| Layout | 10 | Navigation, active states, responsive elements |
+| Timer | 20 | Start/pause, reset, mode switching, countdown, alerts, notifications, volume ramp |
 | Hacking | 8 | Word display, guessing, attempts, game over, reboot |
 | Settings | 9 | Theme selection, debug toggle, active states, system info |
-| Piptris | 7 | Board render, grid dimensions, controls, initial state |
-| **Total** | **33** | |
+| Piptris | 37 | Board render, keyboard/touch controls, game mechanics, responsive |
+| Weather | 22 | Fetch, geolocation errors, data display, warnings, panel navigation |
+| **Total** | **112** | |
 
 Run `npm run test:coverage` locally for a full V8 report in `coverage/`.
 
