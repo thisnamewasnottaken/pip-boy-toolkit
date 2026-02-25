@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- Background -->
+  <rect width="32" height="32" rx="4" fill="#050505"/>
+  <!-- Pip-Boy device body -->
+  <rect x="6" y="3" width="20" height="26" rx="3" fill="none" stroke="#4ade80" stroke-width="1.5"/>
+  <!-- Screen bezel -->
+  <rect x="8" y="6" width="16" height="11" rx="1.5" fill="#050505" stroke="#4ade80" stroke-width="1"/>
+  <!-- Screen glow fill -->
+  <rect x="9" y="7" width="14" height="9" rx="1" fill="#4ade80" opacity="0.12"/>
+  <!-- Cursor prompt -->
+  <text x="10" y="14" font-family="monospace" font-size="6.5" fill="#4ade80" font-weight="bold">&gt;_</text>
+  <!-- Divider line -->
+  <line x1="8" y1="20" x2="24" y2="20" stroke="#4ade80" stroke-width="0.75" opacity="0.6"/>
+  <!-- Left dial -->
+  <circle cx="12" cy="24" r="2.5" fill="none" stroke="#4ade80" stroke-width="1"/>
+  <circle cx="12" cy="24" r="0.75" fill="#4ade80"/>
+  <!-- Right dial -->
+  <circle cx="20" cy="24" r="2.5" fill="none" stroke="#4ade80" stroke-width="1"/>
+  <circle cx="20" cy="24" r="0.75" fill="#4ade80"/>
+  <!-- Center indicator -->
+  <rect x="15" y="22" width="2" height="4" rx="0.5" fill="#4ade80" opacity="0.5"/>
+</svg>
