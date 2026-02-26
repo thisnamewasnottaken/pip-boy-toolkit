@@ -315,7 +315,10 @@ export function Hacking() {
         setStatus(newLives <= 0 ? 'gameOver' : 'wrong');
     }, [status, timeLeft, challenge, round, lives]);
 
-    // Auto-advance after correct/wrong feedback
+    // Auto-advance after correct/wrong feedback.
+    // Intentionally depends only on `status` — we capture `round` at the moment the
+    // feedback status is set (which is the current round), and the timeout fires once
+    // per status transition.  Adding `round` would re-trigger on the advance itself.
     useEffect(() => {
         if (status !== 'correct' && status !== 'wrong') return;
         feedbackRef.current = setTimeout(() => {

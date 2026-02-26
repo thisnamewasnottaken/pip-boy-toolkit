@@ -343,12 +343,6 @@ describe('Hacking component', () => {
         // Find the correct answer index from the challenge
         const options = screen.getByTestId('hacking-options').querySelectorAll('button');
 
-        // Try all options until we get it right (one must be correct)
-        let found = false;
-        for (let i = 0; i < options.length; i++) {
-            // We need to check data - let's just click the first and see what happens
-        }
-
         // Click first option - it may or may not be correct
         act(() => { options[0].click(); });
 
@@ -356,7 +350,6 @@ describe('Hacking component', () => {
         const correct = screen.queryByTestId('hacking-feedback-correct');
         const wrong = screen.queryByTestId('hacking-feedback-wrong');
         expect(correct !== null || wrong !== null).toBe(true);
-        expect(found || true).toBe(true); // placeholder to avoid unused
     });
 
     it('decrements lives on wrong answer', () => {
