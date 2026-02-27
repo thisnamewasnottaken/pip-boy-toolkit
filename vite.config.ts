@@ -16,6 +16,15 @@ export default defineConfig({
         outDir: 'dist',
         sourcemap: false,
         modulePreload: { polyfill: false },
+        rollupOptions: {
+            output: {
+                manualChunks: {
+                    'vendor-charts': ['recharts'],
+                    'vendor-motion': ['motion'],
+                    'vendor-icons': ['lucide-react'],
+                },
+            },
+        },
     },
     test: {
         globals: true,
