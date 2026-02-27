@@ -2,6 +2,36 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <!--
+      Content Security Policy
+      ─────────────────────────────────────────────────────────────────────
+      script-src 'self'        → only our own bundled JS (no inline scripts,
+                                  no CDN scripts). Works because Vite's
+                                  modulePreload polyfill is disabled.
+      style-src 'unsafe-inline'→ required because React renders style={{}}
+                                  props as HTML style attributes on DOM nodes.
+      connect-src open-meteo   → weather API fetch (Climate module).
+      connect-src ws://localhost→ Vite HMR WebSocket (local dev only; harmless
+                                  in production as localhost is unreachable).
+      media-src actions.google → timer alert beep audio file.
+      frame-ancestors          → NOTE: ignored in <meta> tags by all browsers.
+                                  Must be set as an HTTP response header to
+                                  block clickjacking. Add via Cloudflare /
+                                  Netlify / server config if you ever proxy
+                                  GitHub Pages.
+      ─────────────────────────────────────────────────────────────────────
+    -->
+    <meta http-equiv="Content-Security-Policy" content="
+      default-src 'none';
+      script-src 'self';
+      style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+      font-src 'self' https://fonts.gstatic.com;
+      connect-src 'self' https://api.open-meteo.com ws://localhost:* wss://localhost:*;
+      media-src https://actions.google.com;
+      img-src 'self' data:;
+      base-uri 'self';
+      form-action 'none';
+    " />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="A Fallout-themed personal dashboard featuring RobCo Terminal and Pip-Boy 3000 aesthetics. Includes Pomodoro Timer, Climate Module, Hacking Game, and Piptris." />
     <meta name="theme-color" content="#050505" />

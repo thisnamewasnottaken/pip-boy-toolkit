@@ -14,7 +14,8 @@ export default defineConfig({
     },
     build: {
         outDir: 'dist',
-        sourcemap: true,
+        sourcemap: false,
+        modulePreload: { polyfill: false },
     },
     test: {
         globals: true,
