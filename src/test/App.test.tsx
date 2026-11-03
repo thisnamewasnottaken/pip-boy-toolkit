@@ -46,13 +46,13 @@ describe('App', () => {
     });
 
     it('renders with the timer app by default', () => {
-        vi.stubGlobal('Audio', vi.fn(() => ({
+        vi.stubGlobal('Audio', vi.fn(function () { return {
             play: vi.fn().mockResolvedValue(undefined),
             pause: vi.fn(),
             loop: false,
             volume: 1,
             currentTime: 0,
-        })));
+        }; }));
         vi.stubGlobal('Notification', Object.assign(
             vi.fn(),
             { permission: 'default', requestPermission: vi.fn().mockResolvedValue('granted') }
@@ -64,13 +64,13 @@ describe('App', () => {
     });
 
     it('applies the default green theme to the body', () => {
-        vi.stubGlobal('Audio', vi.fn(() => ({
+        vi.stubGlobal('Audio', vi.fn(function () { return {
             play: vi.fn().mockResolvedValue(undefined),
             pause: vi.fn(),
             loop: false,
             volume: 1,
             currentTime: 0,
-        })));
+        }; }));
         vi.stubGlobal('Notification', Object.assign(
             vi.fn(),
             { permission: 'default', requestPermission: vi.fn().mockResolvedValue('granted') }
@@ -82,13 +82,13 @@ describe('App', () => {
     });
 
     it('switches to settings app when SETT nav button is clicked', async () => {
-        vi.stubGlobal('Audio', vi.fn(() => ({
+        vi.stubGlobal('Audio', vi.fn(function () { return {
             play: vi.fn().mockResolvedValue(undefined),
             pause: vi.fn(),
             loop: false,
             volume: 1,
             currentTime: 0,
-        })));
+        }; }));
         vi.stubGlobal('Notification', Object.assign(
             vi.fn(),
             { permission: 'default', requestPermission: vi.fn().mockResolvedValue('granted') }
@@ -105,13 +105,13 @@ describe('App', () => {
     });
 
     it('switches to hacking app when HACK nav button is clicked', async () => {
-        vi.stubGlobal('Audio', vi.fn(() => ({
+        vi.stubGlobal('Audio', vi.fn(function () { return {
             play: vi.fn().mockResolvedValue(undefined),
             pause: vi.fn(),
             loop: false,
             volume: 1,
             currentTime: 0,
-        })));
+        }; }));
         vi.stubGlobal('Notification', Object.assign(
             vi.fn(),
             { permission: 'default', requestPermission: vi.fn().mockResolvedValue('granted') }
@@ -127,13 +127,13 @@ describe('App', () => {
     });
 
     it('switches to piptris app when PIPT nav button is clicked', async () => {
-        vi.stubGlobal('Audio', vi.fn(() => ({
+        vi.stubGlobal('Audio', vi.fn(function () { return {
             play: vi.fn().mockResolvedValue(undefined),
             pause: vi.fn(),
             loop: false,
             volume: 1,
             currentTime: 0,
-        })));
+        }; }));
         vi.stubGlobal('Notification', Object.assign(
             vi.fn(),
             { permission: 'default', requestPermission: vi.fn().mockResolvedValue('granted') }
@@ -149,13 +149,13 @@ describe('App', () => {
     });
 
     it('switches to weather app when CLIM nav button is clicked', async () => {
-        vi.stubGlobal('Audio', vi.fn(() => ({
+        vi.stubGlobal('Audio', vi.fn(function () { return {
             play: vi.fn().mockResolvedValue(undefined),
             pause: vi.fn(),
             loop: false,
             volume: 1,
             currentTime: 0,
-        })));
+        }; }));
         vi.stubGlobal('Notification', Object.assign(
             vi.fn(),
             { permission: 'default', requestPermission: vi.fn().mockResolvedValue('granted') }

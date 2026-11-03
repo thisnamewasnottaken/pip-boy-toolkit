@@ -25,13 +25,13 @@ describe('Timer', () => {
     beforeEach(() => {
         vi.useFakeTimers();
         // Mock Audio
-        vi.stubGlobal('Audio', vi.fn(() => ({
+        vi.stubGlobal('Audio', vi.fn(function () { return {
             play: vi.fn().mockResolvedValue(undefined),
             pause: vi.fn(),
             loop: false,
             volume: 1,
             currentTime: 0,
-        })));
+        }; }));
         // Mock Notification API
         vi.stubGlobal('Notification', Object.assign(
             vi.fn(),
@@ -305,7 +305,7 @@ describe('Timer', () => {
                 volume: 1,
                 currentTime: 0,
             };
-            vi.stubGlobal('Audio', vi.fn(() => mockAudio));
+            vi.stubGlobal('Audio', vi.fn(function () { return mockAudio; }));
             Object.defineProperty(Notification, 'permission', { value: 'granted', configurable: true });
 
             render(<Timer debugMode={true} />);
